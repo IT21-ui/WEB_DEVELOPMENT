@@ -82,18 +82,18 @@ class AdminController extends Controller
      * ------------------------------- */
     public function getClasses()
     {
-        return response()->json(SchoolClass::orderBy('gradeLevel', 'asc')->get());
+        return response()->json(SchoolClass::orderBy('grade_level', 'asc')->get());
     }
 
     public function addClass(Request $request)
     {
         $request->validate([
-            'gradeLevel' => 'required|string|max:50',
+            'grade_level' => 'required|string|max:50',
             'section' => 'required|string|max:50',
         ]);
 
         $class = SchoolClass::create([
-            'gradeLevel' => $request->gradeLevel,
+            'grade_level' => $request->grade_level,
             'section' => $request->section,
         ]);
 
@@ -116,7 +116,7 @@ class AdminController extends Controller
             return [
                 'id' => $subject->id,
                 'name' => $subject->name,
-                'gradeLevel' => $subject->gradeLevel,
+                'grade_level' => $subject->grade_level,
                 'teacher' => $subject->teacher?->name,
                 'teacher_id' => $subject->teacher_id,
             ];
@@ -129,12 +129,12 @@ class AdminController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:100',
-            'gradeLevel' => 'required|string|max:50',
+            'grade_level' => 'required|string|max:50',
         ]);
 
         $subject = Subject::create([
             'name' => $request->name,
-            'gradeLevel' => $request->gradeLevel,
+            'grade_level' => $request->grade_level,
         ]);
 
         return response()->json($subject, 201);

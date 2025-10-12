@@ -9,5 +9,5 @@ class SchoolClass extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['gradeLevel', 'section'];
+    protected $fillable = ['grade_level', 'section'];
 }

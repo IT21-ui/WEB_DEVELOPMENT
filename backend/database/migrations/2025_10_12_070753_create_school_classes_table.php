@@ -7,15 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_approved')->default(false)->after('role');
+        Schema::create('school_classes', function (Blueprint $table) {
+            $table->id();
+            $table->string('grade_level');
+            $table->string('section');
+            $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('is_approved');
-        });
+        Schema::dropIfExists('school_classes');
     }
 };

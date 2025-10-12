@@ -13,19 +13,19 @@ class ClassSubjectController extends Controller
     // ✅ Fetch all classes
     public function getClasses()
     {
-        return response()->json(SchoolClass::orderBy('gradeLevel')->get());
+        return response()->json(SchoolClass::orderBy('grade_level')->get());
     }
 
     // ✅ Add a new class
     public function addClass(Request $request)
     {
         $request->validate([
-            'gradeLevel' => 'required|string',
+            'grade_level' => 'required|string',
             'section' => 'required|string',
         ]);
 
         $class = SchoolClass::create([
-            'gradeLevel' => $request->gradeLevel,
+            'grade_level' => $request->grade_level,
             'section' => $request->section,
         ]);
 
@@ -48,7 +48,7 @@ class ClassSubjectController extends Controller
             return [
                 'id' => $subject->id,
                 'name' => $subject->name,
-                'gradeLevel' => $subject->gradeLevel,
+                'grade_level' => $subject->grade_level,
                 'teacher' => $subject->teacher?->name,
                 'teacher_id' => $subject->teacher_id,
             ];
@@ -62,12 +62,12 @@ class ClassSubjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'gradeLevel' => 'required|string',
+            'grade_level' => 'required|string',
         ]);
 
         $subject = Subject::create([
             'name' => $request->name,
-            'gradeLevel' => $request->gradeLevel,
+            'grade_level' => $request->grade_level,
         ]);
 
         return response()->json($subject);

@@ -9,12 +9,7 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,14 +24,14 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface SchoolClass {
   id: number;
-  gradeLevel: string;
+  grade_level: string;
   section: string;
 }
 
 interface Subject {
   id: number;
   name: string;
-  gradeLevel: string;
+  grade_level: string;
   teacher?: string;
   teacher_id?: number;
 }
@@ -109,7 +104,7 @@ const ClassesAndSubjects: React.FC = () => {
     try {
       const res = await axios.post(
         "http://localhost:8000/api/admin/classes",
-        { gradeLevel: newGrade, section: newSection },
+        { grade_level: newGrade, section: newSection },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setClasses([...classes, res.data]);
@@ -146,7 +141,7 @@ const ClassesAndSubjects: React.FC = () => {
     try {
       const res = await axios.post(
         "http://localhost:8000/api/admin/subjects",
-        { name: newSubject, gradeLevel: selectedGrade },
+        { name: newSubject, grade_level: selectedGrade },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSubjects([...subjects, res.data]);
@@ -253,9 +248,14 @@ const ClassesAndSubjects: React.FC = () => {
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {classes.map((c) => (
-                    <Card key={c.id} className="p-4 flex justify-between items-center">
+                    <Card
+                      key={c.id}
+                      className="p-4 flex justify-between items-center"
+                    >
                       <div>
-                        <h3 className="font-semibold text-primary">{c.gradeLevel}</h3>
+                        <h3 className="font-semibold text-primary">
+                          {c.grade_level}
+                        </h3>
                         <p className="text-muted-foreground">{c.section}</p>
                       </div>
                       <Button
@@ -286,19 +286,18 @@ const ClassesAndSubjects: React.FC = () => {
                   value={newSubject}
                   onChange={(e) => setNewSubject(e.target.value)}
                 />
-                <Select
-                  value={selectedGrade}
-                  onValueChange={setSelectedGrade}
-                >
+                <Select value={selectedGrade} onValueChange={setSelectedGrade}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select Grade Level" />
                   </SelectTrigger>
                   <SelectContent>
-                    {[...new Set(classes.map((c) => c.gradeLevel))].map((g) => (
-                      <SelectItem key={g} value={g}>
-                        {g}
-                      </SelectItem>
-                    ))}
+                    {[...new Set(classes.map((c) => c.grade_level))].map(
+                      (g) => (
+                        <SelectItem key={g} value={g}>
+                          {g}
+                        </SelectItem>
+                      )
+                    )}
                   </SelectContent>
                 </Select>
                 <Button onClick={addSubject}>
@@ -316,9 +315,11 @@ const ClassesAndSubjects: React.FC = () => {
                     <Card key={s.id} className="p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-semibold text-primary">{s.name}</h3>
+                          <h3 className="font-semibold text-primary">
+                            {s.name}
+                          </h3>
                           <p className="text-sm text-muted-foreground">
-                            {s.gradeLevel}
+                            {s.grade_level}
                           </p>
                           <div className="mt-2 flex items-center gap-2 text-sm">
                             <User className="w-4 h-4 text-muted-foreground" />

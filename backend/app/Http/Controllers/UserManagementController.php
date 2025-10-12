@@ -15,7 +15,7 @@ class UserManagementController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $users = User::select('id', 'name', 'email', 'role', 'is_approved', 'created_at', 'updated_at', 'gradeLevel')
+        $users = User::select('id', 'name', 'email', 'role', 'is_approved', 'created_at', 'updated_at', 'grade_level')
             ->get()
             ->map(function ($u) {
                 return [
@@ -26,7 +26,7 @@ class UserManagementController extends Controller
                     'status' => $u->is_approved == 1 ? 'approved' : ($u->is_approved == 2 ? 'denied' : 'pending'),
                     'registrationDate' => $u->created_at->format('Y-m-d'),
                     'lastLogin' => $u->updated_at ? $u->updated_at->format('Y-m-d') : null,
-                    'gradeLevel' => $u->gradeLevel,
+                    'grade_level' => $u->grade_level,
                 ];
             });
 
@@ -77,7 +77,7 @@ class UserManagementController extends Controller
             return response()->json(['message' => 'Only teachers can be assigned a grade'], 400);
         }
 
-        $user->gradeLevel = $request->grade;
+        $user->grade_level = $request->grade;
         $user->save();
 
         return response()->json(['message' => "Assigned to {$request->grade} successfully"]);

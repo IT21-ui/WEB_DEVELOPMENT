@@ -10,15 +10,20 @@ return new class extends Migration {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('grade_level'); 
+            $table->string('grade_level');
+            
+            // Foreign key to teachers (users)
             $table->foreignId('teacher_id')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
+
+            // Foreign key to class
             $table->foreignId('class_id')
                 ->nullable()
                 ->constrained('school_classes')
-                ->cascadeOnDelete(); 
+                ->cascadeOnDelete();
+
             $table->timestamps();
         });
     }
