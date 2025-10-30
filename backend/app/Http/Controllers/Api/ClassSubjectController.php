@@ -10,13 +10,13 @@ use Illuminate\Http\Request;
 
 class ClassSubjectController extends Controller
 {
-    // ✅ Fetch all classes
+    // Fetch all classes
     public function getClasses()
     {
         return response()->json(SchoolClass::orderBy('grade_level')->get());
     }
 
-    // ✅ Add a new class
+    // Add a new class
     public function addClass(Request $request)
     {
         $request->validate([
@@ -32,7 +32,7 @@ class ClassSubjectController extends Controller
         return response()->json($class);
     }
 
-    // ✅ Delete a class
+    // Delete a class
     public function deleteClass($id)
     {
         $class = SchoolClass::findOrFail($id);
@@ -41,7 +41,7 @@ class ClassSubjectController extends Controller
         return response()->json(['message' => 'Class deleted successfully.']);
     }
 
-    // ✅ Fetch all subjects
+    // Fetch all subjects
     public function getSubjects()
     {
         $subjects = Subject::with('teacher:id,name')->get()->map(function ($subject) {
@@ -57,7 +57,7 @@ class ClassSubjectController extends Controller
         return response()->json($subjects);
     }
 
-    // ✅ Add new subject
+    // Add new subject
     public function addSubject(Request $request)
     {
         $request->validate([
@@ -73,7 +73,7 @@ class ClassSubjectController extends Controller
         return response()->json($subject);
     }
 
-    // ✅ Delete subject
+    // Delete subject
     public function deleteSubject($id)
     {
         $subject = Subject::findOrFail($id);
@@ -82,7 +82,7 @@ class ClassSubjectController extends Controller
         return response()->json(['message' => 'Subject deleted successfully.']);
     }
 
-    // ✅ Assign teacher to subject
+    // Assign teacher to subject
     public function assignTeacher(Request $request)
     {
         $request->validate([
@@ -97,7 +97,7 @@ class ClassSubjectController extends Controller
         return response()->json(['message' => 'Teacher assigned successfully.']);
     }
 
-    // ✅ Get list of teachers
+    // Get list of teachers
     public function getTeachers()
     {
         $teachers = User::where('role', 'teacher')

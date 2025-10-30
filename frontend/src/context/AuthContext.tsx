@@ -15,11 +15,13 @@ const AuthContext = createContext<AuthContextType>({
   logout: () => {},
 });
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Auto-login check
+  // Auto-login check
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -45,7 +47,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await axios.post("http://localhost:8000/api/login", { email, password });
+    const res = await axios.post("http://localhost:8000/api/login", {
+      email,
+      password,
+    });
     const { access_token, user } = res.data;
     localStorage.setItem("token", access_token);
     setUser(user);

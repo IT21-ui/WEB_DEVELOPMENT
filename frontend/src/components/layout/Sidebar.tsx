@@ -1,9 +1,15 @@
-import React from 'react';
-import { 
-  Users, Calendar, BarChart3, FileText, Settings, 
-  Shield, GraduationCap, BookOpen 
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import {
+  Users,
+  Calendar,
+  BarChart3,
+  FileText,
+  Settings,
+  Shield,
+  GraduationCap,
+  BookOpen,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   userRole: string;
@@ -16,37 +22,40 @@ const Sidebar: React.FC<SidebarProps> = ({
   userRole,
   activeItem,
   onItemClick,
-  collapsed = false
+  collapsed = false,
 }) => {
-  // ✅ Normalize the role for consistency
-  const normalizedRole =
-    userRole === 'administrator' ? 'admin' : userRole;
+  // Normalize the role for consistency
+  const normalizedRole = userRole === "administrator" ? "admin" : userRole;
 
   const getMenuItems = () => {
     switch (normalizedRole) {
-      case 'admin':
+      case "admin":
         return [
-          { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-          { id: 'users', label: 'User Management', icon: Users },
-          { id: 'classes-and-subjects', label: 'Classes & Subjects', icon: Shield },
-          { id: 'reports', label: 'System Reports', icon: FileText },
-          { id: 'settings', label: 'Settings', icon: Settings },
+          { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+          { id: "users", label: "User Management", icon: Users },
+          {
+            id: "classes-and-subjects",
+            label: "Classes & Subjects",
+            icon: Shield,
+          },
+          { id: "reports", label: "System Reports", icon: FileText },
+          { id: "settings", label: "Settings", icon: Settings },
         ];
-      case 'teacher':
+      case "teacher":
         return [
-          { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-          { id: 'my-subjects', label: 'My Subjects', icon: BookOpen },
-          { id: 'my-students', label: 'My Students', icon: Users },
-          { id: 'attendance', label: 'Attendance', icon: Calendar },
-          { id: 'grades', label: 'Grade Management', icon: FileText },
-          { id: 'reports', label: 'Reports', icon: FileText },
+          { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+          { id: "my-subjects", label: "My Subjects", icon: BookOpen },
+          { id: "my-students", label: "My Students", icon: Users },
+          { id: "attendance", label: "Attendance", icon: Calendar },
+          { id: "grades", label: "Grade Management", icon: FileText },
+          { id: "reports", label: "Reports", icon: FileText },
         ];
-      case 'student':
+      case "student":
         return [
-          { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-          { id: 'attendance', label: 'My Attendance', icon: Calendar },
-          { id: 'grades', label: 'My Grades', icon: BookOpen },
-          { id: 'reports', label: 'My Reports', icon: FileText },
+          { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+          { id: "attendance", label: "My Attendance", icon: Calendar },
+          { id: "grades", label: "My Grades", icon: BookOpen },
+          { id: "reports", label: "My Reports", icon: FileText },
         ];
       default:
         return [];
@@ -56,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const menuItems = getMenuItems();
 
   return (
-    <div 
+    <div
       className={cn(
         "gradient-sidebar h-screen transition-all duration-300 border-r border-primary/20",
         collapsed ? "w-16" : "w-64"
@@ -89,8 +98,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => onItemClick(item.id)}
               className={cn(
                 "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-smooth",
-                isActive 
-                  ? "bg-white/20 text-white shadow-glow" 
+                isActive
+                  ? "bg-white/20 text-white shadow-glow"
                   : "text-white/80 hover:bg-white/10 hover:text-white"
               )}
             >

@@ -19,8 +19,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"; // shadcn dialog
-import heroImage from "@/assets/hero-image.jpg";
+} from "@/components/ui/dialog";
+import homepage from "@/assets/homepage.jpg";
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -29,7 +29,7 @@ const Index = () => {
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
 
-  // ✅ State for testing backend connection
+  // State for testing backend connection
   const [apiMessage, setApiMessage] = useState("Connecting to backend...");
 
   useEffect(() => {
@@ -189,7 +189,7 @@ const Index = () => {
                     </div>
                   </div>
 
-                  {/* ✅ Show Laravel backend connection message */}
+                  {/* Show Laravel backend connection message */}
                   <p className="text-xs text-muted-foreground mt-4 italic">
                     {apiMessage}
                   </p>
@@ -197,7 +197,7 @@ const Index = () => {
 
                 <div className="relative">
                   <img
-                    src={heroImage}
+                    src={homepage}
                     alt="TrackEd Dashboard Interface"
                     className="w-full h-auto rounded-xl shadow-md dashboard-card"
                   />

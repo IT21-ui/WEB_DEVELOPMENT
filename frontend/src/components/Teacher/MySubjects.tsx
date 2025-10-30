@@ -4,10 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Search, Users, Eye, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
 
 interface Subject {
   id: number;
@@ -26,10 +31,42 @@ const MySubjects = () => {
 
   // Sample subjects
   const subjects: Subject[] = [
-    { id: 1, name: "Mathematics", code: "MATH101", section: "Section A", teacher: "Mr. Anderson", students: 32, status: "active" },
-    { id: 2, name: "Science", code: "SCI201", section: "Section B", teacher: "Dr. Brown", students: 28, status: "active" },
-    { id: 3, name: "Filipino", code: "FIL301", section: "Section C", teacher: "Ms. Green", students: 30, status: "active" },
-    { id: 4, name: "ESP", code: "ESP202", section: "Section A", teacher: "Dr. Wilson", students: 25, status: "archived" },
+    {
+      id: 1,
+      name: "Mathematics",
+      code: "MATH101",
+      section: "Section A",
+      teacher: "Mr. Anderson",
+      students: 32,
+      status: "active",
+    },
+    {
+      id: 2,
+      name: "Science",
+      code: "SCI201",
+      section: "Section B",
+      teacher: "Dr. Brown",
+      students: 28,
+      status: "active",
+    },
+    {
+      id: 3,
+      name: "Filipino",
+      code: "FIL301",
+      section: "Section C",
+      teacher: "Ms. Green",
+      students: 30,
+      status: "active",
+    },
+    {
+      id: 4,
+      name: "ESP",
+      code: "ESP202",
+      section: "Section A",
+      teacher: "Dr. Wilson",
+      students: 25,
+      status: "archived",
+    },
   ];
 
   // Filtering
@@ -37,7 +74,8 @@ const MySubjects = () => {
     const matchesSearch =
       subject.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       subject.code.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSection = selectedSection === "all" || subject.section === selectedSection;
+    const matchesSection =
+      selectedSection === "all" || subject.section === selectedSection;
 
     return matchesSearch && matchesSection;
   });
@@ -110,29 +148,46 @@ const MySubjects = () => {
           <TabsTrigger value="list">List View</TabsTrigger>
         </TabsList>
 
-        {/* ✅ Grid View */}
+        {/* Grid View */}
         <TabsContent value="grid">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSubjects.map((subject) => (
-              <Card key={subject.id} className="hover:shadow-lg transition-shadow">
+              <Card
+                key={subject.id}
+                className="hover:shadow-lg transition-shadow"
+              >
                 <CardContent className="p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-semibold">{subject.name}</h3>
                     {getStatusBadge(subject.status)}
                   </div>
                   <p className="text-sm text-gray-600 mb-2">{subject.code}</p>
-                  <p className="text-sm">Section: <span className="font-medium">{subject.section}</span></p>
-                  <p className="text-sm">Teacher: <span className="font-medium">{subject.teacher}</span></p>
+                  <p className="text-sm">
+                    Section:{" "}
+                    <span className="font-medium">{subject.section}</span>
+                  </p>
+                  <p className="text-sm">
+                    Teacher:{" "}
+                    <span className="font-medium">{subject.teacher}</span>
+                  </p>
                   <div className="flex items-center gap-2 text-sm mt-2">
                     <Users className="w-4 h-4" />
                     {subject.students} students
                   </div>
 
                   <div className="flex space-x-2 mt-4">
-                    <Button variant="outline" size="sm" onClick={() => handleViewSubject(subject)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleViewSubject(subject)}
+                    >
                       <Eye className="w-4 h-4" />
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleEditSubject(subject)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEditSubject(subject)}
+                    >
                       <Edit className="w-4 h-4" />
                     </Button>
                   </div>
@@ -142,7 +197,7 @@ const MySubjects = () => {
           </div>
         </TabsContent>
 
-        {/* ✅ List View */}
+        {/* List View */}
         <TabsContent value="list">
           <Card>
             <CardContent className="p-0">
@@ -161,19 +216,34 @@ const MySubjects = () => {
                   </thead>
                   <tbody>
                     {filteredSubjects.map((subject) => (
-                      <tr key={subject.id} className="border-b hover:bg-gray-50">
+                      <tr
+                        key={subject.id}
+                        className="border-b hover:bg-gray-50"
+                      >
                         <td className="p-4 font-medium">{subject.name}</td>
-                        <td className="p-4 font-mono text-sm">{subject.code}</td>
+                        <td className="p-4 font-mono text-sm">
+                          {subject.code}
+                        </td>
                         <td className="p-4">{subject.section}</td>
                         <td className="p-4">{subject.teacher}</td>
                         <td className="p-4">{subject.students}</td>
-                        <td className="p-4">{getStatusBadge(subject.status)}</td>
+                        <td className="p-4">
+                          {getStatusBadge(subject.status)}
+                        </td>
                         <td className="p-4">
                           <div className="flex space-x-1">
-                            <Button variant="ghost" size="sm" onClick={() => handleViewSubject(subject)}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleViewSubject(subject)}
+                            >
                               <Eye className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="sm" onClick={() => handleEditSubject(subject)}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEditSubject(subject)}
+                            >
                               <Edit className="w-4 h-4" />
                             </Button>
                           </div>

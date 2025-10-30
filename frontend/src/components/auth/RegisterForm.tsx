@@ -1,52 +1,52 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { GraduationCap, Users, Shield } from 'lucide-react';
+} from "@/components/ui/select";
+import { GraduationCap, Users, Shield } from "lucide-react";
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert('⚠️ Passwords do not match!');
+      alert("Passwords do not match!");
       return;
     }
 
     if (!role) {
-      alert('⚠️ Please select a role.');
+      alert("Please select a role.");
       return;
     }
 
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:8000/api/register', {
+      const res = await axios.post("http://localhost:8000/api/register", {
         name,
         email,
         password,
@@ -54,14 +54,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
         role,
       });
 
-      alert('✅ Registration successful! You can now log in.');
+      alert("Registration successful! You can now log in.");
       onSwitchToLogin();
     } catch (error: any) {
-      console.error('Registration error:', error);
+      console.error("Registration error:", error);
       if (error.response?.data?.message) {
-        alert(`❌ ${error.response.data.message}`);
+        alert(`${error.response.data.message}`);
       } else {
-        alert('❌ Registration failed. Please check your inputs or try again later.');
+        alert(
+          "Registration failed. Please check your inputs or try again later."
+        );
       }
     } finally {
       setLoading(false);
@@ -161,13 +163,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             className="w-full hero-button"
             disabled={loading}
           >
-            {loading ? 'Registering...' : 'Sign Up'}
+            {loading ? "Registering..." : "Sign Up"}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Button
               variant="link"
               className="p-0 h-auto text-primary"

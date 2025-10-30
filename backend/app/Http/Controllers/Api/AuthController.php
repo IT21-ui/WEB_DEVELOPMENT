@@ -23,9 +23,9 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password, // Make sure this is hashed in User model
+            'password' => $request->password, 
             'role' => $request->role,
-            'is_approved' => false, // default: not yet approved
+            'is_approved' => false, 
         ]);
 
         return response()->json([
@@ -49,7 +49,7 @@ class AuthController extends Controller
             ]);
         }
 
-        // ✅ Check if user is approved
+        // Check if user is approved
         if (!$user->is_approved) {
             return response()->json([
                 'message' => 'Your account is not yet approved by the admin.',

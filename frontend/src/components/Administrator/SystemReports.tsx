@@ -1,62 +1,113 @@
-import React, { useState } from 'react';
-import { FileText, Download, Filter, Calendar, BarChart3, Users, TrendingUp, Clock } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  FileText,
+  Download,
+  Filter,
+  Calendar,
+  BarChart3,
+  Users,
+  TrendingUp,
+  Clock,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+
+//Backend URL
+const API_URL = "http://localhost:8000/api/reports";
 
 const SystemReports: React.FC = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('monthly');
-  const [selectedReport, setSelectedReport] = useState('all');
+  const [selectedPeriod, setSelectedPeriod] = useState("monthly");
+  const [selectedReport, setSelectedReport] = useState("all");
+  const [reportStats, setReportStats] = useState<any[]>([]);
+  const [recentReports, setRecentReports] = useState<any[]>([]);
+  const [systemMetrics, setSystemMetrics] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const reportStats = [
-    { title: 'Total Users', value: 247, change: '+12%', icon: Users },
-    { title: 'Active Sessions', value: 89, change: '+8%', icon: TrendingUp },
-    { title: 'Generated Reports', value: 156, change: '+24%', icon: FileText },
-    { title: 'System Uptime', value: '99.8%', change: '+0.2%', icon: Clock },
-  ];
+  // 🔹 Load data on mount
+  useEffect(() => {
+    fetchAllData();
+  }, []);
 
-  const recentReports = [
-    { id: 1, name: 'Monthly Attendance Report', type: 'Attendance', date: '2024-01-15', status: 'completed', size: '2.4 MB' },
-    { id: 2, name: 'Grade Distribution Analysis', type: 'Academic', date: '2024-01-14', status: 'completed', size: '1.8 MB' },
-    { id: 3, name: 'User Activity Summary', type: 'System', date: '2024-01-13', status: 'processing', size: '3.1 MB' },
-    { id: 4, name: 'Performance Metrics Q1', type: 'Performance', date: '2024-01-12', status: 'completed', size: '4.2 MB' },
-  ];
-
-  const systemMetrics = [
-    { metric: 'Database Performance', value: 94, status: 'excellent' },
-    { metric: 'API Response Time', value: 87, status: 'good' },
-    { metric: 'User Satisfaction', value: 92, status: 'excellent' },
-    { metric: 'System Load', value: 76, status: 'good' },
-  ];
-
-  const generateReport = (reportType: string) => {
-    console.log('Generating report:', reportType);
+  const fetchAllData = async () => {
+    try {
+      setLoading(true);
+      const [summary, recent, metrics] = await Promise.all([
+        axios.get(`${API_URL}/summary`),
+        axios.get(`${API_URL}/recent`),
+        axios.get(`${API_URL}/metrics`),
+      ]);
+      setReportStats(summary.data);
+      setRecentReports(recent.data);
+      setSystemMetrics(metrics.data);
+    } catch (error) {
+      console.error("Error fetching report data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const downloadReport = (reportId: number) => {
-    console.log('Downloading report:', reportId);
+  // 🔹 Generate Report
+  const generateReport = async (reportType: string) => {
+    try {
+      await axios.post(`${API_URL}/generate`, { type: reportType });
+      alert(`Report generation started: ${reportType}`);
+      fetchAllData();
+    } catch (error) {
+      console.error("Error generating report:", error);
+    }
   };
 
-  const getStatusBadge = (status: string): "default" | "secondary" | "destructive" | "outline" => {
-    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-      completed: 'default',
-      processing: 'secondary',
-      failed: 'destructive'
+  // 🔹 Download Report
+  const downloadReport = async (reportId: number) => {
+    try {
+      const res = await axios.get(`${API_URL}/download/${reportId}`);
+      alert(res.data.message);
+    } catch (error) {
+      console.error("Error downloading report:", error);
+    }
+  };
+
+  const getStatusBadge = (
+    status: string
+  ): "default" | "secondary" | "destructive" | "outline" => {
+    const variants: Record<
+      string,
+      "default" | "secondary" | "destructive" | "outline"
+    > = {
+      completed: "default",
+      processing: "secondary",
+      failed: "destructive",
     };
-    return variants[status] || 'secondary';
+    return variants[status] || "secondary";
   };
 
   const getMetricColor = (value: number) => {
-    if (value >= 90) return 'text-success';
-    if (value >= 70) return 'text-warning';
-    return 'text-destructive';
+    if (value >= 90) return "text-green-500";
+    if (value >= 70) return "text-yellow-500";
+    return "text-red-500";
   };
+
+  if (loading)
+    return (
+      <p className="text-center text-muted-foreground">
+        Loading system reports...
+      </p>
+    );
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-primary">System Reports</h1>
@@ -65,7 +116,7 @@ const SystemReports: React.FC = () => {
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
             <SelectTrigger className="w-32">
               <Calendar className="w-4 h-4 mr-2" />
-              <SelectValue />
+              <SelectValue placeholder="Monthly" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="daily">Daily</SelectItem>
@@ -74,7 +125,10 @@ const SystemReports: React.FC = () => {
               <SelectItem value="quarterly">Quarterly</SelectItem>
             </SelectContent>
           </Select>
-          <Button className="hero-button">
+          <Button
+            className="hero-button"
+            onClick={() => generateReport(selectedPeriod)}
+          >
             <FileText className="w-4 h-4 mr-2" />
             Generate Report
           </Button>
@@ -84,15 +138,19 @@ const SystemReports: React.FC = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {reportStats.map((stat, index) => {
-          const Icon = stat.icon;
+          const Icon = [Users, TrendingUp, FileText, Clock][index % 4];
           return (
             <Card key={index} className="stat-widget">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {stat.title}
+                  </p>
                   <div className="flex items-center gap-2">
-                    <p className="text-2xl font-bold text-primary">{stat.value}</p>
-                    <Badge variant="outline" className="text-success">
+                    <p className="text-2xl font-bold text-primary">
+                      {stat.value}
+                    </p>
+                    <Badge variant="outline" className="text-green-500">
                       {stat.change}
                     </Badge>
                   </div>
@@ -106,6 +164,7 @@ const SystemReports: React.FC = () => {
         })}
       </div>
 
+      {/* Main Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Reports */}
         <Card className="dashboard-card lg:col-span-2">
@@ -118,7 +177,7 @@ const SystemReports: React.FC = () => {
               <Select value={selectedReport} onValueChange={setSelectedReport}>
                 <SelectTrigger className="w-32">
                   <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue />
+                  <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
@@ -132,15 +191,22 @@ const SystemReports: React.FC = () => {
           <CardContent>
             <div className="space-y-4">
               {recentReports.map((report) => (
-                <div key={report.id} className="flex items-center justify-between p-3 border border-border/50 rounded-lg">
+                <div
+                  key={report.id}
+                  className="flex items-center justify-between p-3 border border-border/50 rounded-lg"
+                >
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
                       <FileText className="w-4 h-4 text-primary" />
                       <div>
-                        <h4 className="font-medium text-primary">{report.name}</h4>
+                        <h4 className="font-medium text-primary">
+                          {report.name}
+                        </h4>
                         <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <span>{report.type}</span>
-                          <span>{report.date}</span>
+                          <span>
+                            {new Date(report.date).toLocaleDateString()}
+                          </span>
                           <span>{report.size}</span>
                         </div>
                       </div>
@@ -149,7 +215,7 @@ const SystemReports: React.FC = () => {
                       </Badge>
                     </div>
                   </div>
-                  {report.status === 'completed' && (
+                  {report.status === "completed" && (
                     <Button
                       size="sm"
                       variant="outline"
@@ -177,8 +243,14 @@ const SystemReports: React.FC = () => {
               {systemMetrics.map((metric, index) => (
                 <div key={index}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-primary">{metric.metric}</span>
-                    <span className={`text-sm font-semibold ${getMetricColor(metric.value)}`}>
+                    <span className="text-sm font-medium text-primary">
+                      {metric.metric}
+                    </span>
+                    <span
+                      className={`text-sm font-semibold ${getMetricColor(
+                        metric.value
+                      )}`}
+                    >
                       {metric.value}%
                     </span>
                   </div>
@@ -203,71 +275,99 @@ const SystemReports: React.FC = () => {
               <TabsTrigger value="users">Users</TabsTrigger>
               <TabsTrigger value="system">System</TabsTrigger>
             </TabsList>
-            
+
+            {/* Attendance */}
             <TabsContent value="attendance" className="mt-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Button variant="outline" onClick={() => generateReport('daily-attendance')}>
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Daily Attendance
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("daily-attendance")}
+                >
+                  <Calendar className="w-4 h-4 mr-2" /> Daily Attendance
                 </Button>
-                <Button variant="outline" onClick={() => generateReport('class-attendance')}>
-                  <Users className="w-4 h-4 mr-2" />
-                  Class Attendance
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("class-attendance")}
+                >
+                  <Users className="w-4 h-4 mr-2" /> Class Attendance
                 </Button>
-                <Button variant="outline" onClick={() => generateReport('absence-trends')}>
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  Absence Trends
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("absence-trends")}
+                >
+                  <TrendingUp className="w-4 h-4 mr-2" /> Absence Trends
                 </Button>
               </div>
             </TabsContent>
-            
+
+            {/* Grades */}
             <TabsContent value="grades" className="mt-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Button variant="outline" onClick={() => generateReport('grade-distribution')}>
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Grade Distribution
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("grade-distribution")}
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" /> Grade Distribution
                 </Button>
-                <Button variant="outline" onClick={() => generateReport('performance-trends')}>
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  Performance Trends
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("performance-trends")}
+                >
+                  <TrendingUp className="w-4 h-4 mr-2" /> Performance Trends
                 </Button>
-                <Button variant="outline" onClick={() => generateReport('class-averages')}>
-                  <Users className="w-4 h-4 mr-2" />
-                  Class Averages
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("class-averages")}
+                >
+                  <Users className="w-4 h-4 mr-2" /> Class Averages
                 </Button>
               </div>
             </TabsContent>
-            
+
+            {/* Users */}
             <TabsContent value="users" className="mt-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Button variant="outline" onClick={() => generateReport('user-activity')}>
-                  <Users className="w-4 h-4 mr-2" />
-                  User Activity
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("user-activity")}
+                >
+                  <Users className="w-4 h-4 mr-2" /> User Activity
                 </Button>
-                <Button variant="outline" onClick={() => generateReport('registration-stats')}>
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  Registration Stats
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("registration-stats")}
+                >
+                  <TrendingUp className="w-4 h-4 mr-2" /> Registration Stats
                 </Button>
-                <Button variant="outline" onClick={() => generateReport('role-distribution')}>
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Role Distribution
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("role-distribution")}
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" /> Role Distribution
                 </Button>
               </div>
             </TabsContent>
-            
+
+            {/* System */}
             <TabsContent value="system" className="mt-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Button variant="outline" onClick={() => generateReport('system-performance')}>
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  System Performance
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("system-performance")}
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" /> System Performance
                 </Button>
-                <Button variant="outline" onClick={() => generateReport('error-logs')}>
-                  <FileText className="w-4 h-4 mr-2" />
-                  Error Logs
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("error-logs")}
+                >
+                  <FileText className="w-4 h-4 mr-2" /> Error Logs
                 </Button>
-                <Button variant="outline" onClick={() => generateReport('usage-statistics')}>
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  Usage Statistics
+                <Button
+                  variant="outline"
+                  onClick={() => generateReport("usage-statistics")}
+                >
+                  <TrendingUp className="w-4 h-4 mr-2" /> Usage Statistics
                 </Button>
               </div>
             </TabsContent>

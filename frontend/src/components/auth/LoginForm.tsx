@@ -1,59 +1,68 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Shield, Users, GraduationCap } from 'lucide-react';
+import React, { useState } from "react";
+import axios from "axios";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Shield, Users, GraduationCap } from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 interface LoginFormProps {
   onLogin: (role: string, email: string) => void;
   onSwitchToRegister: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onSwitchToRegister }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const LoginForm: React.FC<LoginFormProps> = ({
+  onLogin,
+  onSwitchToRegister,
+}) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Fallback for testing UI (when backend is down)
-  const [fallbackRole, setFallbackRole] = useState('administrator');
+  const [fallbackRole, setFallbackRole] = useState("administrator");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:8000/api/login', {
+      const res = await axios.post("http://localhost:8000/api/login", {
         email,
         password,
       });
 
       const data = res.data;
-      localStorage.setItem('token', data.access_token);
+      localStorage.setItem("token", data.access_token);
       onLogin(data.user.role, data.user.email);
 
-      alert('✅ Login successful!');
+      alert("Login successful!");
     } catch (error: any) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
 
       if (error.response?.data?.message) {
-        alert(`❌ ${error.response.data.message}`);
+        alert(`${error.response.data.message}`);
       } else {
-        alert('❌ Login failed. Please check your email or password.');
+        alert("Login failed. Please check your email or password.");
       }
 
       // Optional fallback for UI testing (when backend is off)
       if (!error.response) {
-        console.warn('⚠️ Backend not reachable — using fake login.');
-        localStorage.setItem('token', 'FAKE_TOKEN');
+        console.warn("Backend not reachable — using fake login.");
+        localStorage.setItem("token", "FAKE_TOKEN");
         onLogin(fallbackRole, email || `${fallbackRole}@example.com`);
       }
     } finally {
@@ -99,14 +108,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onSwitchToRegister }) =>
             />
           </div>
 
-          <Button type="submit" className="w-full hero-button" disabled={loading}>
-            {loading ? 'Logging in...' : 'Log In'}
+          <Button
+            type="submit"
+            className="w-full hero-button"
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Log In"}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Don’t have an account?{' '}
+            Don’t have an account?{" "}
             <Button
               variant="link"
               className="p-0 h-auto text-primary"
