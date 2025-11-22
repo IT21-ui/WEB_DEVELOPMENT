@@ -10,17 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, Users, GraduationCap } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 interface LoginFormProps {
-  onLogin: (role: string, email: string) => void;
+  onLogin: (role: string, name: string) => void;
   onSwitchToRegister: () => void;
 }
 

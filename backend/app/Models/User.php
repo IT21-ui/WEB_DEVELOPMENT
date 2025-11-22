@@ -26,19 +26,24 @@ class User extends Authenticatable
     ];
 
     /**
-     * Automatically hash password before saving
+     * SAFE password mutator (prevents double hashing)
      */
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = Hash::make($value);
+        // If password is already hashed, don't hash again
+        if (substr($value, 0, 4) === '$2y$') {
+            $this->attributes['password'] = $value;
+        } else {
+            $this->attributes['password'] = Hash::make($value);
+        }
     }
 
     /**
-     * Map role values to friendly names
+     * Human readable role name
      */
     public function getRoleNameAttribute()
     {
-        return match($this->role) {
+        return match ($this->role) {
             'admin' => 'Administrator',
             'teacher' => 'Teacher',
             'student' => 'Student',
@@ -47,8 +52,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Optional: allow assigning either 'admin' or 'administrator'
-     * and store as 'admin' in the database
+     * Map 'administrator' to 'admin' internally
      */
     public function setRoleAttribute($value)
     {

@@ -1,124 +1,222 @@
-"use client";
-
 import React from "react";
-import StatCard from "./StatCard";
-import { Users, Calendar, BookOpen, TrendingUp } from "lucide-react";
+import {
+  Clock,
+  BookOpen,
+  FileText,
+  MessageSquare,
+  Calendar as CalendarIcon,
+  Megaphone,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const TeacherDashboard: React.FC = () => {
-  const classData = [
-    { subject: "Mathematics", totalStudents: 35, averageGPA: 87.5, attendanceRate: 92 },
-    { subject: "Science", totalStudents: 28, averageGPA: 84.2, attendanceRate: 89 },
-    { subject: "Filipino", totalStudents: 31, averageGPA: 90.1, attendanceRate: 94 },
-  ];
-
-  const recentGrades = [
-    { student: "Manguiat John Zedrick", subject: "Mathematics", grade: 85, date: "2025-09-12" },
-    { student: "Edorot Kathriz", subject: "Science", grade: 88, date: "2025-09-14" },
-    { student: "Gella Jannine", subject: "Filipino", grade: 88, date: "2025-09-12" },
-    { student: "Belco Kim", subject: "Mathematics", grade: 85, date: "2025-09-14" },
-  ];
-
-  const upcomingClasses = [
-    { subject: "Mathematics", time: "09:00 AM", room: "Room 201", students: 35 },
-    { subject: "Science", time: "11:00 AM", room: "Lab 105", students: 28 },
-    { subject: "Filipino", time: "02:00 PM", room: "Room 203", students: 31 },
+  const scheduleData = [
+    {
+      courseTitle: "IT 111",
+      section: "BSIT 2A",
+      day: "WED",
+      time: "10:00-01:00PM",
+      room: "IT 105",
+      remark: "",
+    },
+    {
+      courseTitle: "IT 111",
+      section: "BSIT 2B",
+      day: "FRI",
+      time: "01:00-04:00PM",
+      room: "LAB 4",
+      remark: "",
+    },
+    {
+      courseTitle: "IT 111",
+      section: "BSIT 2C",
+      day: "TUE",
+      time: "10:00-01:00PM",
+      room: "CompLab2",
+      remark: "",
+    },
+    {
+      courseTitle: "IT 121",
+      section: "BSIT 3A",
+      day: "FRI",
+      time: "07:00-09:00AM",
+      room: "Online",
+      remark: "",
+    },
+    {
+      courseTitle: "IT 121",
+      section: "BSIT 3A",
+      day: "MON",
+      time: "04:00-07:00PM",
+      room: "LAB 1",
+      remark: "",
+    },
+    {
+      courseTitle: "IT 121",
+      section: "BSIT 3B",
+      day: "FRI",
+      time: "04:00-06:00PM",
+      room: "ONLINE",
+      remark: "",
+    },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Stats */}
+      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Students" value={94} subtitle="Across all classes" icon={Users} />
-        <StatCard title="Classes Today" value={3} subtitle="Scheduled classes" icon={Calendar} color="success" />
-        <StatCard title="Average GPA" value={87.3} subtitle="All subjects" icon={BookOpen} trend={{ value: 2.1, isPositive: true }} />
-        <StatCard title="Attendance Rate" value="91.7%" subtitle="This week" icon={TrendingUp} color="primary" />
-      </div>
-
-      {/* Class Performance + Schedule */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Class Performance */}
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Class Performance</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {classData.map((classItem, index) => (
-                <div key={index} className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium text-primary">{classItem.subject}</h4>
-                    <span className="text-sm text-muted-foreground">{classItem.totalStudents} students</span>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Average GPA: {classItem.averageGPA}%</span>
-                      <span>Attendance: {classItem.attendanceRate}%</span>
-                    </div>
-                    <Progress value={classItem.averageGPA} className="h-2" />
-                  </div>
-                </div>
-              ))}
+        {/* DTR - Time Log */}
+        <Card className="border-none shadow-lg overflow-hidden bg-[hsl(var(--cyan))] text-white">
+          <CardContent className="p-6 relative">
+            <div className="absolute right-4 top-4 opacity-20">
+              <Clock className="w-16 h-16" />
             </div>
+            <h2 className="text-4xl font-bold mb-2">DTR</h2>
+            <p className="text-sm mb-4 opacity-90">Time Log</p>
+            <button className="text-sm bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all">
+              More info →
+            </button>
           </CardContent>
         </Card>
 
-        {/* Upcoming Classes */}
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Today's Schedule</CardTitle>
+        {/* Course Load */}
+        <Card className="border-none shadow-lg overflow-hidden bg-[hsl(var(--green))] text-white">
+          <CardContent className="p-6 relative">
+            <div className="absolute right-4 top-4 opacity-20">
+              <BookOpen className="w-16 h-16" />
+            </div>
+            <h2 className="text-4xl font-bold mb-2">9</h2>
+            <p className="text-sm mb-4 opacity-90">Course Load</p>
+            <button className="text-sm bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all">
+              More info →
+            </button>
+          </CardContent>
+        </Card>
+
+        {/* Downloadable Forms */}
+        <Card className="border-none shadow-lg overflow-hidden bg-[hsl(var(--amber))] text-white">
+          <CardContent className="p-6 relative">
+            <div className="absolute right-4 top-4 opacity-20">
+              <FileText className="w-16 h-16" />
+            </div>
+            <h2 className="text-4xl font-bold mb-2">3</h2>
+            <p className="text-sm mb-4 opacity-90">Downloadable Forms</p>
+            <button className="text-sm bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all">
+              More info →
+            </button>
+          </CardContent>
+        </Card>
+
+        {/* Student Feedback */}
+        <Card className="border-none shadow-lg overflow-hidden bg-[hsl(var(--red))] text-white">
+          <CardContent className="p-6 relative">
+            <div className="absolute right-4 top-4 opacity-20">
+              <MessageSquare className="w-16 h-16" />
+            </div>
+            <h2 className="text-4xl font-bold mb-2">0</h2>
+            <p className="text-sm mb-4 opacity-90">Student Feedback</p>
+            <button className="text-sm bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all">
+              More info →
+            </button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Class Schedule and Today's Class */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Class Schedule */}
+        <Card className="lg:col-span-2 border-none shadow-lg bg-white">
+          <CardHeader className="bg-[hsl(var(--info))] text-white">
+            <CardTitle className="flex items-center gap-2">
+              <CalendarIcon className="w-5 h-5" />
+              Class Schedule
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {upcomingClasses.map((classItem, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border border-border/50 rounded-lg">
-                  <div className="flex-1">
-                    <h4 className="font-medium text-primary">{classItem.subject}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {classItem.room} • {classItem.students} students
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-gray-50">
+                  <TableHead className="font-semibold">Course Title</TableHead>
+                  <TableHead className="font-semibold">Section</TableHead>
+                  <TableHead className="font-semibold">Day</TableHead>
+                  <TableHead className="font-semibold">Time</TableHead>
+                  <TableHead className="font-semibold">Room</TableHead>
+                  <TableHead className="font-semibold">Remark</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {scheduleData.map((schedule, index) => (
+                  <TableRow key={index} className="hover:bg-gray-50">
+                    <TableCell>{schedule.courseTitle}</TableCell>
+                    <TableCell>{schedule.section}</TableCell>
+                    <TableCell>{schedule.day}</TableCell>
+                    <TableCell>{schedule.time}</TableCell>
+                    <TableCell>{schedule.room}</TableCell>
+                    <TableCell>{schedule.remark}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* Right Column - Today's Class and Announcements */}
+        <div className="space-y-6">
+          {/* Today's Class */}
+          <Card className="border-none shadow-lg bg-white">
+            <CardHeader className="bg-[hsl(var(--info))] text-white">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <CalendarIcon className="w-4 h-4" />
+                Today's Class
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <p className="text-muted-foreground text-center">None today.</p>
+            </CardContent>
+          </Card>
+
+          {/* Announcements */}
+          <Card className="border-none shadow-lg bg-white">
+            <CardHeader className="bg-[hsl(var(--info))] text-white">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Megaphone className="w-4 h-4" />
+                Announcement(s)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <div>
+                <h3 className="font-semibold text-lg mb-2">
+                  AY 2025-2026 1st Term
+                </h3>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <p className="font-medium">Final Grade Submission</p>
+                    <p className="text-muted-foreground flex items-center gap-2">
+                      <CalendarIcon className="w-4 h-4" />
+                      June 07, 2025
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium text-primary">{classItem.time}</p>
-                    <Button size="sm" variant="outline" className="mt-1">
-                      Take Attendance
-                    </Button>
+                  <div>
+                    <p className="font-medium">In-service Training</p>
+                    <p className="text-muted-foreground flex items-center gap-2">
+                      <CalendarIcon className="w-4 h-4" />
+                      May 15, 2025
+                    </p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recent Grades */}
-      <Card className="dashboard-card">
-        <CardHeader>
-          <CardTitle>Recent Grades Entered</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {recentGrades.map((grade, index) => (
-              <div key={index} className="p-3 border border-border/50 rounded-lg">
-                <h4 className="font-medium text-primary">{grade.student}</h4>
-                <p className="text-sm text-muted-foreground">{grade.subject}</p>
-                <div className="flex items-center justify-between mt-2">
-                  <span
-                    className={`text-lg font-bold ${
-                      grade.grade >= 90 ? "text-success" : grade.grade >= 75 ? "text-primary" : "text-warning"
-                    }`}
-                  >
-                    {grade.grade}%
-                  </span>
-                  <span className="text-xs text-muted-foreground">{grade.date}</span>
-                </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };

@@ -25,25 +25,14 @@ import homepage from "@/assets/homepage.jpg";
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState("");
-  const [userEmail, setUserEmail] = useState("");
+  const userEmail = localStorage.getItem("email") || "";
+  const [userName, setUserName] = useState("");
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
 
-  // State for testing backend connection
-  const [apiMessage, setApiMessage] = useState("Connecting to backend...");
-
-  useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/test")
-      .then((res) => setApiMessage(res.data.message))
-      .catch((err) =>
-        setApiMessage("Error connecting to backend: " + err.message)
-      );
-  }, []);
-
-  const handleLogin = (role: string, email: string) => {
+  const handleLogin = (role: string, name: string) => {
     setUserRole(role);
-    setUserEmail(email);
+    setUserName(name);
     setIsAuthenticated(true);
     setOpenAuthModal(false);
   };
@@ -51,7 +40,7 @@ const Index = () => {
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUserRole("");
-    setUserEmail("");
+    setUserName("");
   };
 
   if (isAuthenticated) {
@@ -59,6 +48,7 @@ const Index = () => {
       <DashboardLayout
         userRole={userRole}
         userEmail={userEmail}
+        userName={userName}
         onLogout={handleLogout}
       />
     );
@@ -143,14 +133,14 @@ const Index = () => {
 
         {/* Hero Section */}
         <main>
-          <section className="relative py-16 overflow-hidden">
-            <div className="max-w-7xl mx-auto px-6">
-              <div className="grid lg:grid-cols-2 gap-10 items-center">
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <h1 className="text-3xl lg:text-4xl font-bold text-primary leading-tight">
+          <section className="relative py-20 overflow-visible">
+            <div className="max-w-6xl mx-auto px-8">
+              <div className="grid lg:grid-cols-2 gap-9 items-center">
+                <div className="space-y-9">
+                  <div className="space-y-5">
+                    <h1 className="text-5xl lg:text-3xl font-bold text-primary leading-tight">
                       Modern Student{" "}
-                      <span className="block bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+                      <span className="inline-block bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
                         Management System
                       </span>
                     </h1>
@@ -160,7 +150,7 @@ const Index = () => {
                       platform designed for the digital age.
                     </p>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex flex-col sm:flex-row gap-8">
                     <Button
                       size="sm"
                       className="hero-button text-sm px-5 py-3"
@@ -188,13 +178,7 @@ const Index = () => {
                       <p className="text-xs text-muted-foreground">Uptime</p>
                     </div>
                   </div>
-
-                  {/* Show Laravel backend connection message */}
-                  <p className="text-xs text-muted-foreground mt-4 italic">
-                    {apiMessage}
-                  </p>
                 </div>
-
                 <div className="relative">
                   <img
                     src={homepage}

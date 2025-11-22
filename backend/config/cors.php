@@ -5,7 +5,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:8080'], // your React app URL
+    'allowed_origins' => ['http://localhost:3000', 'http://localhost:8080'],
 
     'allowed_origins_patterns' => [],
 

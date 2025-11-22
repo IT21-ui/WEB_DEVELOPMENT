@@ -11,12 +11,7 @@ import {
   Loader2,
   Filter,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -65,16 +60,20 @@ const UserManagement: React.FC = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:8000/api/admin/pending-users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        "http://localhost:8000/api/admin/pending-users",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setUsers(res.data);
     } catch (error: any) {
       console.error("Error fetching users:", error);
       toast({
         title: "Failed to load users",
         description:
-          error.response?.data?.message || "Please check your backend connection.",
+          error.response?.data?.message ||
+          "Please check your backend connection.",
         variant: "destructive",
       });
     } finally {
@@ -127,7 +126,8 @@ const UserManagement: React.FC = () => {
       console.error("Action failed:", error);
       toast({
         title: "Action failed",
-        description: error.response?.data?.message || "Could not perform action.",
+        description:
+          error.response?.data?.message || "Could not perform action.",
         variant: "destructive",
       });
     }
@@ -239,7 +239,9 @@ const UserManagement: React.FC = () => {
                       <TableBody>
                         {filteredUsers(status).map((user) => (
                           <TableRow key={user.id} className="hover:bg-muted/50">
-                            <TableCell className="font-medium">{user.name}</TableCell>
+                            <TableCell className="font-medium">
+                              {user.name}
+                            </TableCell>
                             <TableCell>{user.email}</TableCell>
                             <TableCell>{getRoleBadge(user.role)}</TableCell>
                             <TableCell>{getStatusBadge(user.status)}</TableCell>

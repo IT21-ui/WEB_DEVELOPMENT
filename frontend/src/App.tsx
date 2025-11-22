@@ -60,6 +60,7 @@ const AppRoutes = () => {
             <DashboardLayout
               userRole={role}
               userEmail={email}
+              userName={email.split("@")[0]}
               onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/";

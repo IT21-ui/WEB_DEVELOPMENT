@@ -49,15 +49,39 @@
     --info: 217 91% 60%;
     --info-foreground: 0 0% 98%;
 
+    /* Dashboard Card Colors from image */
+    --cyan: 187 71% 45%;
+    --cyan-foreground: 0 0% 100%;
+    --green: 142 69% 48%;
+    --green-foreground: 0 0% 100%;
+    --amber: 45 93% 47%;
+    --amber-foreground: 0 0% 100%;
+    --red: 4 90% 58%;
+    --red-foreground: 0 0% 100%;
+
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 75%));
-    --gradient-secondary: linear-gradient(135deg, hsl(210 20% 98%), hsl(217 91% 95%));
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(217 91% 60%),
+      hsl(217 91% 75%)
+    );
+    --gradient-secondary: linear-gradient(
+      135deg,
+      hsl(210 20% 98%),
+      hsl(217 91% 95%)
+    );
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(217 91% 98%));
-    --gradient-sidebar: linear-gradient(180deg, hsl(217 91% 60%), hsl(217 91% 45%));
+    --gradient-sidebar: linear-gradient(
+      180deg,
+      hsl(217 91% 60%),
+      hsl(217 91% 45%)
+    );
 
     /* Shadows */
-    --shadow-card: 0 4px 6px -1px hsl(217 91% 60% / 0.1), 0 2px 4px -1px hsl(217 91% 60% / 0.06);
-    --shadow-elevated: 0 20px 25px -5px hsl(217 91% 60% / 0.1), 0 10px 10px -5px hsl(217 91% 60% / 0.04);
+    --shadow-card: 0 4px 6px -1px hsl(217 91% 60% / 0.1),
+      0 2px 4px -1px hsl(217 91% 60% / 0.06);
+    --shadow-elevated: 0 20px 25px -5px hsl(217 91% 60% / 0.1),
+      0 10px 10px -5px hsl(217 91% 60% / 0.04);
     --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.3);
 
     /* Animations */
@@ -135,15 +159,15 @@
   .gradient-primary {
     background: var(--gradient-primary);
   }
-  
+
   .gradient-secondary {
     background: var(--gradient-secondary);
   }
-  
+
   .gradient-card {
     background: var(--gradient-card);
   }
-  
+
   .gradient-sidebar {
     background: var(--gradient-sidebar);
   }
@@ -152,11 +176,11 @@
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
-  
+
   .shadow-elevated {
     box-shadow: var(--shadow-elevated);
   }
-  
+
   .shadow-glow {
     box-shadow: var(--shadow-glow);
   }
@@ -165,7 +189,7 @@
   .transition-smooth {
     transition: var(--transition-smooth);
   }
-  
+
   .transition-bounce {
     transition: var(--transition-bounce);
   }
@@ -175,20 +199,20 @@
     @apply bg-card border border-border/50 rounded-xl shadow-card hover:shadow-elevated transition-smooth;
     background: var(--gradient-card);
   }
-  
+
   .stat-widget {
     @apply dashboard-card p-6 hover:scale-[1.02] transition-bounce;
   }
-  
+
   .hero-button {
     @apply text-primary-foreground font-medium px-6 py-3 rounded-lg transition-smooth hover:scale-105 hover:shadow-glow;
     background: var(--gradient-primary);
   }
-  
+
   .nav-item {
     @apply flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-smooth hover:bg-accent/20;
   }
-  
+
   .nav-item.active {
     @apply bg-accent/30 text-accent-foreground font-semibold;
   }

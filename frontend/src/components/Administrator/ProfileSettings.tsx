@@ -1,27 +1,43 @@
-import React, { useState } from 'react';
-import { User, Mail, Lock, Camera, Save, Edit3, Shield, Bell } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from "react";
+import {
+  User,
+  Mail,
+  Lock,
+  Camera,
+  Save,
+  Edit3,
+  Shield,
+  Bell,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const ProfileSettings: React.FC = () => {
   const [profile, setProfile] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'admin@egmail.com',
-    phone: '09977502588',
-    bio: 'System Administrator for TrackEd. Passionate about education technology and improving student outcomes.',
-    location: 'Tagoloan, Philippines',
-    department: '',
-    joinDate: '2025-08-15',
-    lastLogin: '2025-09-21 09:30 AM',
+    firstName: "John",
+    lastName: "Doe",
+    email: "admin@egmail.com",
+    phone: "09977502588",
+    bio: "System Administrator for TrackEd. Passionate about education technology and improving student outcomes.",
+    location: "Tagoloan, Philippines",
+    department: "",
+    joinDate: "2025-08-15",
+    lastLogin: "2025-09-21 09:30 AM",
   });
 
   const [preferences, setPreferences] = useState({
@@ -38,42 +54,77 @@ const ProfileSettings: React.FC = () => {
   const [security, setSecurity] = useState({
     twoFactorEnabled: false,
     loginAlerts: true,
-    sessionTimeout: '30',
+    sessionTimeout: "30",
     passwordChangeRequired: false,
   });
 
   const [isEditing, setIsEditing] = useState(false);
 
+  // Change password modal state
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [passwords, setPasswords] = useState({
+    current: "",
+    new: "",
+    confirm: "",
+  });
+
+  // Handlers
   const handleProfileChange = (key: string, value: string) => {
-    setProfile(prev => ({ ...prev, [key]: value }));
+    setProfile((prev) => ({ ...prev, [key]: value }));
   };
 
   const handlePreferenceChange = (key: string, value: boolean) => {
-    setPreferences(prev => ({ ...prev, [key]: value }));
+    setPreferences((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSecurityChange = (key: string, value: any) => {
-    setSecurity(prev => ({ ...prev, [key]: value }));
+    setSecurity((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSaveProfile = () => {
-    console.log('Saving profile:', profile);
+    console.log("Saving profile:", profile);
     setIsEditing(false);
   };
 
   const handleSavePreferences = () => {
-    console.log('Saving preferences:', preferences);
+    console.log("Saving preferences:", preferences);
   };
 
   const handleSaveSecurity = () => {
-    console.log('Saving security settings:', security);
+    console.log("Saving security settings:", security);
   };
 
-  const SettingRow = ({ label, description, children }: { label: string; description?: string; children: React.ReactNode }) => (
+  const handleChangePassword = () => {
+    if (!passwords.current || !passwords.new || !passwords.confirm) {
+      alert("Please fill in all password fields.");
+      return;
+    }
+    if (passwords.new !== passwords.confirm) {
+      alert("New passwords do not match.");
+      return;
+    }
+
+    console.log("Password updated:", passwords);
+    alert("Password changed successfully!");
+    setPasswords({ current: "", new: "", confirm: "" });
+    setIsChangePasswordOpen(false);
+  };
+
+  const SettingRow = ({
+    label,
+    description,
+    children,
+  }: {
+    label: string;
+    description?: string;
+    children: React.ReactNode;
+  }) => (
     <div className="flex items-center justify-between py-3">
       <div className="space-y-0.5">
         <Label className="text-sm font-medium text-primary">{label}</Label>
-        {description && <p className="text-xs text-muted-foreground">{description}</p>}
+        {description && (
+          <p className="text-xs text-muted-foreground">{description}</p>
+        )}
       </div>
       <div>{children}</div>
     </div>
@@ -81,6 +132,7 @@ const ProfileSettings: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-primary">Profile Settings</h1>
@@ -99,6 +151,7 @@ const ProfileSettings: React.FC = () => {
           <TabsTrigger value="activity">Activity</TabsTrigger>
         </TabsList>
 
+        {/* ---------------- PROFILE TAB ---------------- */}
         <TabsContent value="profile">
           <Card className="dashboard-card">
             <CardHeader>
@@ -112,7 +165,7 @@ const ProfileSettings: React.FC = () => {
                   onClick={() => setIsEditing(!isEditing)}
                 >
                   <Edit3 className="w-4 h-4 mr-2" />
-                  {isEditing ? 'Cancel' : 'Edit Profile'}
+                  {isEditing ? "Cancel" : "Edit Profile"}
                 </Button>
               </div>
             </CardHeader>
@@ -121,9 +174,13 @@ const ProfileSettings: React.FC = () => {
               <div className="flex items-center gap-6">
                 <div className="relative">
                   <Avatar className="w-24 h-24">
-                    <AvatarImage src="/placeholder-avatar.png" alt={`${profile.firstName} ${profile.lastName}`} />
+                    <AvatarImage
+                      src="/placeholder-avatar.png"
+                      alt={`${profile.firstName} ${profile.lastName}`}
+                    />
                     <AvatarFallback className="text-lg">
-                      {profile.firstName.charAt(0)}{profile.lastName.charAt(0)}
+                      {profile.firstName.charAt(0)}
+                      {profile.lastName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                   {isEditing && (
@@ -141,7 +198,8 @@ const ProfileSettings: React.FC = () => {
                   </h3>
                   <p className="text-muted-foreground">{profile.department}</p>
                   <p className="text-sm text-muted-foreground">
-                    Member since {new Date(profile.joinDate).toLocaleDateString()}
+                    Member since{" "}
+                    {new Date(profile.joinDate).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -150,61 +208,25 @@ const ProfileSettings: React.FC = () => {
 
               {/* Profile Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input
-                    id="firstName"
-                    value={profile.firstName}
-                    onChange={(e) => handleProfileChange('firstName', e.target.value)}
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName"
-                    value={profile.lastName}
-                    onChange={(e) => handleProfileChange('lastName', e.target.value)}
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={profile.email}
-                    onChange={(e) => handleProfileChange('email', e.target.value)}
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    value={profile.phone}
-                    onChange={(e) => handleProfileChange('phone', e.target.value)}
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location">Location</Label>
-                  <Input
-                    id="location"
-                    value={profile.location}
-                    onChange={(e) => handleProfileChange('location', e.target.value)}
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="department">Department</Label>
-                  <Input
-                    id="department"
-                    value={profile.department}
-                    onChange={(e) => handleProfileChange('department', e.target.value)}
-                    disabled={!isEditing}
-                  />
-                </div>
+                {[
+                  ["firstName", "First Name"],
+                  ["lastName", "Last Name"],
+                  ["email", "Email Address"],
+                  ["phone", "Phone Number"],
+                  ["location", "Location"],
+                  ["department", "Department"],
+                ].map(([id, label]) => (
+                  <div key={id} className="space-y-2">
+                    <Label htmlFor={id}>{label}</Label>
+                    <Input
+                      id={id}
+                      type={id === "email" ? "email" : "text"}
+                      value={(profile as any)[id]}
+                      onChange={(e) => handleProfileChange(id, e.target.value)}
+                      disabled={!isEditing}
+                    />
+                  </div>
+                ))}
               </div>
 
               <div className="space-y-2">
@@ -212,7 +234,7 @@ const ProfileSettings: React.FC = () => {
                 <Textarea
                   id="bio"
                   value={profile.bio}
-                  onChange={(e) => handleProfileChange('bio', e.target.value)}
+                  onChange={(e) => handleProfileChange("bio", e.target.value)}
                   disabled={!isEditing}
                   rows={4}
                 />
@@ -233,6 +255,7 @@ const ProfileSettings: React.FC = () => {
           </Card>
         </TabsContent>
 
+        {/* ---------------- PREFERENCES TAB ---------------- */}
         <TabsContent value="preferences">
           <Card className="dashboard-card">
             <CardHeader>
@@ -242,94 +265,70 @@ const ProfileSettings: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Notifications */}
               <div className="space-y-4">
                 <h4 className="font-medium text-primary">Notifications</h4>
-                
-                <SettingRow
-                  label="Email Notifications"
-                  description="Receive notifications via email"
-                >
-                  <Switch
-                    checked={preferences.emailNotifications}
-                    onCheckedChange={(checked) => handlePreferenceChange('emailNotifications', checked)}
-                  />
-                </SettingRow>
-
-                <SettingRow
-                  label="Push Notifications"
-                  description="Receive browser push notifications"
-                >
-                  <Switch
-                    checked={preferences.pushNotifications}
-                    onCheckedChange={(checked) => handlePreferenceChange('pushNotifications', checked)}
-                  />
-                </SettingRow>
-
-                <SettingRow
-                  label="Weekly Reports"
-                  description="Receive weekly summary reports"
-                >
-                  <Switch
-                    checked={preferences.weeklyReports}
-                    onCheckedChange={(checked) => handlePreferenceChange('weeklyReports', checked)}
-                  />
-                </SettingRow>
-
-                <SettingRow
-                  label="Security Alerts"
-                  description="Receive security-related notifications"
-                >
-                  <Switch
-                    checked={preferences.securityAlerts}
-                    onCheckedChange={(checked) => handlePreferenceChange('securityAlerts', checked)}
-                  />
-                </SettingRow>
-
-                <SettingRow
-                  label="Maintenance Notifications"
-                  description="Receive system maintenance updates"
-                >
-                  <Switch
-                    checked={preferences.maintenanceNotifications}
-                    onCheckedChange={(checked) => handlePreferenceChange('maintenanceNotifications', checked)}
-                  />
-                </SettingRow>
+                {[
+                  [
+                    "emailNotifications",
+                    "Email Notifications",
+                    "Receive notifications via email",
+                  ],
+                  [
+                    "pushNotifications",
+                    "Push Notifications",
+                    "Receive browser push notifications",
+                  ],
+                  [
+                    "weeklyReports",
+                    "Weekly Reports",
+                    "Receive weekly summary reports",
+                  ],
+                  [
+                    "securityAlerts",
+                    "Security Alerts",
+                    "Receive security-related notifications",
+                  ],
+                  [
+                    "maintenanceNotifications",
+                    "Maintenance Notifications",
+                    "Receive system maintenance updates",
+                  ],
+                ].map(([key, label, desc]) => (
+                  <SettingRow key={key} label={label} description={desc}>
+                    <Switch
+                      checked={(preferences as any)[key]}
+                      onCheckedChange={(checked) =>
+                        handlePreferenceChange(key, checked)
+                      }
+                    />
+                  </SettingRow>
+                ))}
               </div>
 
               <Separator />
 
+              {/* Display */}
               <div className="space-y-4">
                 <h4 className="font-medium text-primary">Display</h4>
-                
-                <SettingRow
-                  label="Dark Mode"
-                  description="Use dark theme"
-                >
-                  <Switch
-                    checked={preferences.darkMode}
-                    onCheckedChange={(checked) => handlePreferenceChange('darkMode', checked)}
-                  />
-                </SettingRow>
-
-                <SettingRow
-                  label="Compact View"
-                  description="Use compact layout for data tables"
-                >
-                  <Switch
-                    checked={preferences.compactView}
-                    onCheckedChange={(checked) => handlePreferenceChange('compactView', checked)}
-                  />
-                </SettingRow>
-
-                <SettingRow
-                  label="Auto Save"
-                  description="Automatically save changes"
-                >
-                  <Switch
-                    checked={preferences.autoSave}
-                    onCheckedChange={(checked) => handlePreferenceChange('autoSave', checked)}
-                  />
-                </SettingRow>
+                {[
+                  ["darkMode", "Dark Mode", "Use dark theme"],
+                  [
+                    "compactView",
+                    "Compact View",
+                    "Use compact layout for data tables",
+                  ],
+                  ["autoSave", "Auto Save", "Automatically save changes"],
+                ].map(([key, label, desc]) => (
+                  <SettingRow key={key} label={label} description={desc}>
+                    <Switch
+                      checked={(preferences as any)[key]}
+                      onCheckedChange={(checked) =>
+                        handlePreferenceChange(key, checked)
+                      }
+                    />
+                  </SettingRow>
+                ))}
               </div>
 
               <div className="flex justify-end pt-4">
@@ -342,6 +341,7 @@ const ProfileSettings: React.FC = () => {
           </Card>
         </TabsContent>
 
+        {/* ---------------- SECURITY TAB ---------------- */}
         <TabsContent value="security">
           <Card className="dashboard-card">
             <CardHeader>
@@ -359,7 +359,9 @@ const ProfileSettings: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={security.twoFactorEnabled}
-                      onCheckedChange={(checked) => handleSecurityChange('twoFactorEnabled', checked)}
+                      onCheckedChange={(checked) =>
+                        handleSecurityChange("twoFactorEnabled", checked)
+                      }
                     />
                     {security.twoFactorEnabled && (
                       <Badge variant="secondary">Enabled</Badge>
@@ -373,7 +375,9 @@ const ProfileSettings: React.FC = () => {
                 >
                   <Switch
                     checked={security.loginAlerts}
-                    onCheckedChange={(checked) => handleSecurityChange('loginAlerts', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSecurityChange("loginAlerts", checked)
+                    }
                   />
                 </SettingRow>
               </div>
@@ -382,25 +386,31 @@ const ProfileSettings: React.FC = () => {
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="sessionTimeout">Session Timeout (minutes)</Label>
+                  <Label htmlFor="sessionTimeout">
+                    Session Timeout (minutes)
+                  </Label>
                   <Input
                     id="sessionTimeout"
                     type="number"
                     value={security.sessionTimeout}
-                    onChange={(e) => handleSecurityChange('sessionTimeout', e.target.value)}
+                    onChange={(e) =>
+                      handleSecurityChange("sessionTimeout", e.target.value)
+                    }
                     className="w-32"
                   />
                 </div>
 
                 <div className="space-y-4">
-                  <Button variant="outline">
-                    <Lock className="w-4 h-4 mr-2" />
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsChangePasswordOpen(true)}
+                    className="flex items-center gap-2"
+                  >
+                    <Lock className="w-4 h-4" />
                     Change Password
                   </Button>
-                  
-                  <Button variant="outline">
-                    Download Account Data
-                  </Button>
+
+                  <Button variant="outline">Download Account Data</Button>
                 </div>
               </div>
 
@@ -414,6 +424,7 @@ const ProfileSettings: React.FC = () => {
           </Card>
         </TabsContent>
 
+        {/* ---------------- ACTIVITY TAB ---------------- */}
         <TabsContent value="activity">
           <Card className="dashboard-card">
             <CardHeader>
@@ -421,37 +432,100 @@ const ProfileSettings: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-start gap-3 p-3 border border-border/50 rounded-lg">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-primary">Profile updated</p>
-                    <p className="text-xs text-muted-foreground">Changed profile information</p>
-                    <p className="text-xs text-muted-foreground">2 hours ago</p>
+                {[
+                  {
+                    color: "bg-primary",
+                    title: "Profile updated",
+                    desc: "Changed profile information",
+                    time: "2 hours ago",
+                  },
+                  {
+                    color: "bg-success",
+                    title: "Successful login",
+                    desc: "Logged in from Chrome on Windows",
+                    time: "Today at 9:30 AM",
+                  },
+                  {
+                    color: "bg-warning",
+                    title: "Password changed",
+                    desc: "Account password was updated",
+                    time: "Yesterday at 3:45 PM",
+                  },
+                ].map((a, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 p-3 border border-border/50 rounded-lg"
+                  >
+                    <div className={`w-2 h-2 ${a.color} rounded-full mt-2`} />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-primary">
+                        {a.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{a.desc}</p>
+                      <p className="text-xs text-muted-foreground">{a.time}</p>
+                    </div>
                   </div>
-                </div>
-                
-                <div className="flex items-start gap-3 p-3 border border-border/50 rounded-lg">
-                  <div className="w-2 h-2 bg-success rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-primary">Successful login</p>
-                    <p className="text-xs text-muted-foreground">Logged in from Chrome on Windows</p>
-                    <p className="text-xs text-muted-foreground">Today at 9:30 AM</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3 p-3 border border-border/50 rounded-lg">
-                  <div className="w-2 h-2 bg-warning rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-primary">Password changed</p>
-                    <p className="text-xs text-muted-foreground">Account password was updated</p>
-                    <p className="text-xs text-muted-foreground">Yesterday at 3:45 PM</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* ---------------- CHANGE PASSWORD MODAL ---------------- */}
+      <Dialog
+        open={isChangePasswordOpen}
+        onOpenChange={setIsChangePasswordOpen}
+      >
+        <DialogContent className="sm:max-w-md backdrop-blur-sm">
+          <DialogHeader>
+            <DialogTitle className="text-primary">Change Password</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            {["current", "new", "confirm"].map((field) => (
+              <div key={field} className="space-y-2">
+                <Label htmlFor={field}>
+                  {field === "current"
+                    ? "Current Password"
+                    : field === "new"
+                    ? "New Password"
+                    : "Confirm Password"}
+                </Label>
+                <Input
+                  id={field}
+                  type="password"
+                  placeholder={
+                    field === "confirm"
+                      ? "Re-enter new password"
+                      : `Enter ${field} password`
+                  }
+                  value={(passwords as any)[field]}
+                  onChange={(e) =>
+                    setPasswords((prev) => ({
+                      ...prev,
+                      [field]: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            ))}
+          </div>
+
+          <DialogFooter className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setIsChangePasswordOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleChangePassword} className="hero-button">
+              <Save className="w-4 h-4 mr-2" />
+              Change Password
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -1,39 +1,54 @@
-import React from 'react';
-import { Bell, Menu, LogOut, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import React from "react";
+import { Bell, Menu, LogOut, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
-  userEmail: string;
+  userName: string;
   userRole: string;
   onToggleSidebar: () => void;
   onLogout: () => void;
+  onItemClick: (item: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ userEmail, userRole, onToggleSidebar, onLogout }) => {
-  const getInitials = (email: string) => {
-    return email.split('@')[0].slice(0, 2).toUpperCase();
+const Header: React.FC<HeaderProps> = ({
+  userName,
+  userRole,
+  onToggleSidebar,
+  onLogout,
+  onItemClick,
+}) => {
+  const getInitials = (name: string) => {
+    if (!name) return "??";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   };
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'text-red-600 bg-red-100';
-      case 'teacher': return 'text-blue-600 bg-blue-100';
-      case 'student': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case "admin":
+        return "text-red-600 bg-red-100";
+      case "teacher":
+        return "text-blue-600 bg-blue-100";
+      case "student":
+        return "text-green-600 bg-green-100";
+      default:
+        return "text-gray-600 bg-gray-100";
     }
   };
 
   return (
     <header className="bg-white/80 backdrop-blur-sm border-b border-border/50 px-6 py-4">
       <div className="flex items-center justify-between">
+        {/* ---------- LEFT SIDE ---------- */}
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
@@ -49,6 +64,7 @@ const Header: React.FC<HeaderProps> = ({ userEmail, userRole, onToggleSidebar, o
           </div>
         </div>
 
+        {/* ---------- RIGHT SIDE ---------- */}
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
@@ -63,23 +79,30 @@ const Header: React.FC<HeaderProps> = ({ userEmail, userRole, onToggleSidebar, o
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-3 hover:bg-primary/10">
+              <Button
+                variant="ghost"
+                className="flex items-center gap-3 hover:bg-primary/10"
+              >
                 <Avatar className="w-8 h-8">
                   <AvatarImage src="" />
                   <AvatarFallback className="text-primary bg-primary/10">
-                    {getInitials(userEmail)}
+                    {getInitials(userName)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="text-left">
-                  <p className="text-sm font-medium text-primary">{userEmail}</p>
-                  <p className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${getRoleColor(userRole)}`}>
+                  <p className="text-sm font-medium text-primary">{userName}</p>
+                  <p
+                    className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${getRoleColor(
+                      userRole
+                    )}`}
+                  >
                     {userRole}
                   </p>
                 </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onItemClick("profile")}>
                 <User className="w-4 h-4 mr-2" />
                 Profile Settings
               </DropdownMenuItem>

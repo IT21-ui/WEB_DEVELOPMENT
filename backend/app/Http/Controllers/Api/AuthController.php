@@ -5,31 +5,64 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Teacher;
+use App\Models\Student;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     // Register a new user
-    public function register(Request $request)
+        public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:admin,administrator,teacher,student',
-        ]);
+$validated = $request->validate([
+    'name' => 'required|string|max:255',
+    'email' => 'required|string|email|unique:users',
+    'password' => 'required|string|min:6|confirmed',
+    'role' => 'required|in:admin,administrator,teacher,student',
+    'mobile' => 'nullable|string|required_if:role,teacher,student',
+    'department_id' => 'required_if:role,student,teacher|integer|exists:departments,id',
+    'year_level_id' => 'required_if:role,student|integer|exists:year_levels,id',
+]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password, 
-            'role' => $request->role,
-            'is_approved' => false, 
-        ]);
+            $nameParts = explode(' ', $validated['name']);
+            $firstName = $nameParts[0];
+            $lastName = isset($nameParts[1]) ? implode(' ', array_slice($nameParts, 1)) : '';
+            
+            $user = User::create([
+                'name' => $validated['name'], 
+                'email' => $validated['email'],
+                'password' => $validated['password'], 
+                'role' => $validated['role'],
+                'is_approved' => false,
+            ]);
+
+            if ($validated['role'] === 'teacher') {
+                Teacher::create([
+                    'user_id' => $user->id,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'email' => $validated['email'],
+                    'mobile' => $validated['mobile'] ?? null,
+                    'department_id' => $validated['department_id'],
+                ]);
+            }
+
+if ($validated['role'] === 'student') {
+    Student::create([
+    'user_id'        => $user->id,
+    'first_name'     => $firstName,
+    'last_name'      => $lastName,
+    'email'          => $request->email,
+    'mobile'         => $request->mobile,
+    'department_id'  => $request->department_id,   
+    'year_level_id'  => $request->year_level_id,   
+    'section_id'     => null, 
+]);
+            }
 
         return response()->json([
-            'message' => 'Registration successful. Please wait for admin approval before logging in.',
+            'message' => 'Registration successful. Please wait for admin approval.',
         ]);
     }
 
@@ -49,7 +82,6 @@ class AuthController extends Controller
             ]);
         }
 
-        // Check if user is approved
         if (!$user->is_approved) {
             return response()->json([
                 'message' => 'Your account is not yet approved by the admin.',
@@ -65,14 +97,12 @@ class AuthController extends Controller
         ]);
     }
 
-    // Logout the user
+    // Logout
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'message' => 'Logged out successfully',
-        ]);
+        return response()->json(['message' => 'Logged out successfully']);
     }
 
     // Get logged-in user info

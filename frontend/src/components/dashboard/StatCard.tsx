@@ -1,61 +1,50 @@
-import React from 'react';
-import { LucideIcon } from 'lucide-react';
+import React from "react";
+import { LucideIcon } from "lucide-react";
 
 interface StatCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
   icon: LucideIcon;
-  color?: 'primary' | 'success' | 'warning' | 'destructive';
-  trend?: {
-    value: number;
-    isPositive: boolean;
-  };
+  color?: "cyan" | "green" | "amber" | "red" | "primary";
+  onClick?: () => void;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ 
-  title, 
-  value, 
-  subtitle, 
-  icon: Icon, 
-  color = 'primary',
-  trend 
-}) => {
-  const getColorClasses = (color: string) => {
-    switch (color) {
-      case 'success':
-        return 'text-success bg-success/10';
-      case 'warning':
-        return 'text-warning bg-warning/10';
-      case 'destructive':
-        return 'text-destructive bg-destructive/10';
-      default:
-        return 'text-primary bg-primary/10';
-    }
-  };
+const colorMap = {
+  cyan: "from-cyan-500 to-blue-500",
+  green: "from-emerald-500 to-green-400",
+  amber: "from-amber-500 to-yellow-400",
+  red: "from-rose-500 to-red-400",
+  primary: "from-indigo-500 to-purple-500",
+};
 
+const StatCard: React.FC<StatCardProps> = ({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  color = "primary",
+  onClick,
+}) => {
   return (
-    <div className="stat-widget">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
-          <div className="flex items-baseline gap-2">
-            <h3 className="text-2xl font-bold text-primary">{value}</h3>
-            {trend && (
-              <span className={`text-xs font-medium ${
-                trend.isPositive ? 'text-success' : 'text-destructive'
-              }`}>
-                {trend.isPositive ? '+' : ''}{trend.value}%
-              </span>
-            )}
-          </div>
-          {subtitle && (
-            <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
-          )}
-        </div>
-        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getColorClasses(color)}`}>
-          <Icon className="w-6 h-6" />
-        </div>
+    <div
+      onClick={onClick}
+      className={`relative overflow-hidden rounded-2xl shadow-lg text-white cursor-pointer transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br ${colorMap[color]} p-6`}
+    >
+      {/* Faint background icon */}
+      <div className="absolute right-4 top-4 opacity-20">
+        <Icon className="w-16 h-16" />
+      </div>
+
+      <div className="relative z-10">
+        <h3 className="text-sm font-medium text-white/80">{title}</h3>
+        <h2 className="text-4xl font-bold mt-1 mb-2">{value}</h2>
+
+        {subtitle && <p className="text-sm text-white/70 mb-4">{subtitle}</p>}
+
+        <button className="text-sm bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all">
+          More info →
+        </button>
       </div>
     </div>
   );
