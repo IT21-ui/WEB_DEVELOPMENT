@@ -8,7 +8,7 @@ use App\Models\Section;
 
 class SectionController extends Controller
 {
-    // GET: all sections (with optional filtering)
+    // GET: all sections 
     public function index(Request $request)
     {
         $query = Section::with(['department']);

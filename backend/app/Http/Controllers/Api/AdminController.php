@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\SchoolClass;
-use App\Models\Subject;
-use App\Models\Section;
+
+
+
 
 class AdminController extends Controller
 {
@@ -129,109 +129,4 @@ public function dashboardStats(Request $request)
         return response()->json(['message' => $message]);
     }
 
-
-    /* ========================================
-     * CLASS MANAGEMENT
-     * ======================================== */
-    public function getClasses()
-    {
-        return response()->json(
-            SchoolClass::orderBy('grade_level', 'asc')->get()
-        );
-    }
-
-    public function addClass(Request $request)
-    {
-        $request->validate([
-            'grade_level' => 'required|string|max:50',
-            'section'     => 'required|string|max:50',
-        ]);
-
-        $class = SchoolClass::create([
-            'grade_level' => $request->grade_level,
-            'section'     => $request->section,
-        ]);
-
-        return response()->json($class, 201);
-    }
-
-    public function deleteClass($id)
-    {
-        $class = SchoolClass::findOrFail($id);
-        $class->delete();
-
-        return response()->json(['message' => 'Class deleted successfully.']);
-    }
-
-
-    /* ========================================
-     * SUBJECT MANAGEMENT
-     * ======================================== */
-    public function getSubjects()
-    {
-        $subjects = Subject::with('teacher:id,name,email')
-            ->get()
-            ->map(function ($subject) {
-                return [
-                    'id'          => $subject->id,
-                    'name'        => $subject->name,
-                    'grade_level' => $subject->grade_level,
-                    'teacher'     => $subject->teacher?->name,
-                    'teacher_id'  => $subject->teacher_id,
-                ];
-            });
-
-        return response()->json($subjects);
-    }
-
-    public function addSubject(Request $request)
-    {
-        $request->validate([
-            'name'        => 'required|string|max:100',
-            'grade_level' => 'required|string|max:50',
-        ]);
-
-        $subject = Subject::create([
-            'name'        => $request->name,
-            'grade_level' => $request->grade_level,
-        ]);
-
-        return response()->json($subject, 201);
-    }
-
-    public function deleteSubject($id)
-    {
-        $subject = Subject::findOrFail($id);
-        $subject->delete();
-
-        return response()->json(['message' => 'Subject deleted successfully.']);
-    }
-
-
-    /* ========================================
-     * TEACHERS
-     * ======================================== */
-    public function getTeachers()
-    {
-        $teachers = User::where('role', 'teacher')
-            ->where('is_approved', 1)
-            ->select('id', 'name', 'email')
-            ->get();
-
-        return response()->json($teachers);
-    }
-
-    public function assignTeacher(Request $request)
-    {
-        $request->validate([
-            'subject_id' => 'required|integer|exists:subjects,id',
-            'teacher_id' => 'required|integer|exists:users,id',
-        ]);
-
-        $subject = Subject::findOrFail($request->subject_id);
-        $subject->teacher_id = $request->teacher_id;
-        $subject->save();
-
-        return response()->json(['message' => 'Teacher assigned successfully.']);
-    }
 }

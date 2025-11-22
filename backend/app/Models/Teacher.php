@@ -15,7 +15,7 @@ class Teacher extends Model
         'last_name',
         'email',
         'mobile',
-        'department_id', // change from 'department' to 'department_id'
+        'department_id', 
     ];
 
     public function subjects() {

@@ -12,7 +12,7 @@ class Section extends Model
     protected $fillable = [
         'name',
         'department_id',
-        'year_level_id',   // because your DB uses this column name
+        'year_level_id',  
     ];
 
     public function department() {
@@ -27,7 +27,6 @@ class Section extends Model
         return $this->hasMany(Subject::class);
     }
 
-    // If you want to connect to YearLevel table:
     public function yearLevelInfo() {
             return $this->belongsTo(YearLevel::class, 'year_level_id', 'id');
         }

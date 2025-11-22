@@ -8,7 +8,7 @@ use App\Models\Subject;
 
 class SubjectController extends Controller
 {
-    // 🟦 GET ALL SUBJECTS (OPTIONAL FILTER BY DEPARTMENT & YEAR LEVEL)
+    // GET ALL SUBJECTS 
     public function index(Request $request)
     {
         $query = Subject::with(['department', 'yearLevel', 'teacher']);
@@ -56,7 +56,7 @@ class SubjectController extends Controller
         });
     }
 
-    // 🟦 GET SPECIFIC SUBJECT
+    // GET SPECIFIC SUBJECT
     public function show($id)
     {
         $subject = Subject::with(['department', 'yearLevel', 'teacher'])->find($id);
@@ -68,7 +68,7 @@ class SubjectController extends Controller
         return response()->json($subject);
     }
 
-    // 🟩 CREATE SUBJECT
+    // CREATE SUBJECT
     public function store(Request $request)
     {
         $request->validate([
@@ -93,7 +93,7 @@ class SubjectController extends Controller
         return response()->json($subject, 201);
     }
 
-    // 🟧 UPDATE SUBJECT
+    // UPDATE SUBJECT
     public function update(Request $request, $id)
     {
         $subject = Subject::find($id);
@@ -114,7 +114,7 @@ class SubjectController extends Controller
         return response()->json($subject);
     }
 
-    // 🟥 DELETE SUBJECT
+    // DELETE SUBJECT
     public function destroy($id)
     {
         $subject = Subject::find($id);

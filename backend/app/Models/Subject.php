@@ -15,11 +15,11 @@ class Subject extends Model {
         'time',
         'room',
         'teacher_id',
-        'department_id',   // ADD THIS
-        'year_level_id',   // ADD THIS
-        'units',           // optional, if you added it
-        'semester',        // optional, if you added it
-        'curriculum_year', // optional, if you added it
+        'department_id',   
+        'year_level_id',   
+        'units',          
+        'semester',        
+        'curriculum_year', 
     ];
 
 public function sections() {

@@ -22,7 +22,7 @@ Route::get('/year-levels/{id}', [YearLevelController::class, 'show']);
 // Students
 Route::get('/students', [StudentController::class, 'index']);
     Route::put('/students/{id}', [StudentController::class, 'update']);  
-
+// Teachers
 Route::get('/teachers', [TeacherController::class, 'index']);
 
 // Sections

@@ -30,7 +30,6 @@ class User extends Authenticatable
      */
     public function setPasswordAttribute($value)
     {
-        // If password is already hashed, don't hash again
         if (substr($value, 0, 4) === '$2y$') {
             $this->attributes['password'] = $value;
         } else {
@@ -38,9 +37,7 @@ class User extends Authenticatable
         }
     }
 
-    /**
-     * Human readable role name
-     */
+
     public function getRoleNameAttribute()
     {
         return match ($this->role) {
