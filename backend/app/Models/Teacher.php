@@ -15,14 +15,16 @@ class Teacher extends Model
         'last_name',
         'email',
         'mobile',
-        'department_id', 
+        'department_id',
     ];
 
-    public function subjects() {
+    public function subjects()
+    {
         return $this->hasMany(Subject::class);
     }
 
-    public function department() {
+    public function department()
+    {
         return $this->belongsTo(Department::class);
     }
 }

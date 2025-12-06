@@ -21,8 +21,6 @@ return new class extends Migration
             // Foreign keys
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->foreignId('year_level_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('teacher_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('section_id')->nullable()->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });

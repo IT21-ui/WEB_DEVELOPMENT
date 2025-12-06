@@ -5,7 +5,13 @@ import { Calendar, Users, Save, Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 
 interface Student {
@@ -25,32 +31,56 @@ const AttendanceManager: React.FC = () => {
   const { toast } = useToast();
   const [selectedSubject, setSelectedSubject] = useState<string>("");
   const [selectedSection, setSelectedSection] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
   const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
 
   const subjects = ["Mathematics", "Science", "Filipino", "English", "History"];
   const sections = ["Section A", "Section B", "Section C"];
 
   const students: Student[] = [
-    { id: 1, name: "Jannine Mae Gella", studentId: "STU001", section: "Section A" },
+    { id: 1, name: "Gahai Hahe", studentId: "STU001", section: "Section A" },
     { id: 2, name: "Kim Belco", studentId: "STU002", section: "Section A" },
     { id: 3, name: "Triah Gamier", studentId: "STU003", section: "Section B" },
-    { id: 4, name: "John Zedrick Manguiat", studentId: "STU004", section: "Section B" },
-    { id: 5, name: "Kathriz Edorot", studentId: "STU005", section: "Section C" },
-    { id: 6, name: "Grace Tocmohan", studentId: "STU006", section: "Section C" },
+    {
+      id: 4,
+      name: "John Zedrick Manguiat",
+      studentId: "STU004",
+      section: "Section B",
+    },
+    {
+      id: 5,
+      name: "Kathriz Edorot",
+      studentId: "STU005",
+      section: "Section C",
+    },
+    {
+      id: 6,
+      name: "Grace Tocmohan",
+      studentId: "STU006",
+      section: "Section C",
+    },
   ];
 
   // ====== HELPER FUNCTIONS ======
-  const getAttendanceStatus = (studentId: number): "present" | "absent" | "late" => {
+  const getAttendanceStatus = (
+    studentId: number
+  ): "present" | "absent" | "late" => {
     const record = attendance.find((a) => a.studentId === studentId);
     return record?.status || "absent";
   };
 
-  const updateAttendance = (studentId: number, status: "present" | "absent" | "late") => {
+  const updateAttendance = (
+    studentId: number,
+    status: "present" | "absent" | "late"
+  ) => {
     setAttendance((prev) => {
       const existing = prev.find((a) => a.studentId === studentId);
       if (existing) {
-        return prev.map((a) => (a.studentId === studentId ? { ...a, status } : a));
+        return prev.map((a) =>
+          a.studentId === studentId ? { ...a, status } : a
+        );
       } else {
         return [...prev, { studentId, status }];
       }
@@ -101,20 +131,33 @@ const AttendanceManager: React.FC = () => {
   const getStatusBadge = (status: "present" | "absent" | "late") => {
     switch (status) {
       case "present":
-        return <Badge className="bg-success/10 text-success hover:bg-success/20">Present</Badge>;
+        return (
+          <Badge className="bg-success/10 text-success hover:bg-success/20">
+            Present
+          </Badge>
+        );
       case "late":
-        return <Badge className="bg-warning/10 text-warning hover:bg-warning/20">Late</Badge>;
+        return (
+          <Badge className="bg-warning/10 text-warning hover:bg-warning/20">
+            Late
+          </Badge>
+        );
       case "absent":
         return <Badge variant="destructive">Absent</Badge>;
     }
   };
 
   // ====== FILTER STUDENTS BY SECTION ======
-  const filteredStudents = selectedSection ? students.filter((s) => s.section === selectedSection) : [];
+  const filteredStudents = selectedSection
+    ? students.filter((s) => s.section === selectedSection)
+    : [];
 
   const attendanceStats = {
     present: attendance.filter((a) => a.status === "present").length,
-    absent: filteredStudents.length - attendance.filter((a) => a.status === "present" || a.status === "late").length,
+    absent:
+      filteredStudents.length -
+      attendance.filter((a) => a.status === "present" || a.status === "late")
+        .length,
     late: attendance.filter((a) => a.status === "late").length,
     total: filteredStudents.length,
   };
@@ -177,19 +220,27 @@ const AttendanceManager: React.FC = () => {
           {selectedSubject && selectedSection && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div className="text-center p-3 bg-success/10 rounded-lg">
-                <p className="text-2xl font-bold text-success">{attendanceStats.present}</p>
+                <p className="text-2xl font-bold text-success">
+                  {attendanceStats.present}
+                </p>
                 <p className="text-sm text-muted-foreground">Present</p>
               </div>
               <div className="text-center p-3 bg-destructive/10 rounded-lg">
-                <p className="text-2xl font-bold text-destructive">{attendanceStats.absent}</p>
+                <p className="text-2xl font-bold text-destructive">
+                  {attendanceStats.absent}
+                </p>
                 <p className="text-sm text-muted-foreground">Absent</p>
               </div>
               <div className="text-center p-3 bg-warning/10 rounded-lg">
-                <p className="text-2xl font-bold text-warning">{attendanceStats.late}</p>
+                <p className="text-2xl font-bold text-warning">
+                  {attendanceStats.late}
+                </p>
                 <p className="text-sm text-muted-foreground">Late</p>
               </div>
               <div className="text-center p-3 bg-primary/10 rounded-lg">
-                <p className="text-2xl font-bold text-primary">{attendanceStats.total}</p>
+                <p className="text-2xl font-bold text-primary">
+                  {attendanceStats.total}
+                </p>
                 <p className="text-sm text-muted-foreground">Total</p>
               </div>
             </div>
@@ -230,11 +281,16 @@ const AttendanceManager: React.FC = () => {
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                         <span className="text-sm font-medium text-primary">
-                          {student.name.split(" ").map((n) => n[0]).join("")}
+                          {student.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </span>
                       </div>
                       <div>
-                        <h4 className="font-medium text-primary">{student.name}</h4>
+                        <h4 className="font-medium text-primary">
+                          {student.name}
+                        </h4>
                         <p className="text-sm text-muted-foreground">
                           {student.studentId} • {student.section}
                         </p>
@@ -247,8 +303,14 @@ const AttendanceManager: React.FC = () => {
                         <Button
                           size="sm"
                           variant={status === "present" ? "default" : "outline"}
-                          onClick={() => updateAttendance(student.id, "present")}
-                          className={status === "present" ? "bg-success hover:bg-success/90" : ""}
+                          onClick={() =>
+                            updateAttendance(student.id, "present")
+                          }
+                          className={
+                            status === "present"
+                              ? "bg-success hover:bg-success/90"
+                              : ""
+                          }
                         >
                           Present
                         </Button>
@@ -256,13 +318,19 @@ const AttendanceManager: React.FC = () => {
                           size="sm"
                           variant={status === "late" ? "default" : "outline"}
                           onClick={() => updateAttendance(student.id, "late")}
-                          className={status === "late" ? "bg-warning hover:bg-warning/90" : ""}
+                          className={
+                            status === "late"
+                              ? "bg-warning hover:bg-warning/90"
+                              : ""
+                          }
                         >
                           Late
                         </Button>
                         <Button
                           size="sm"
-                          variant={status === "absent" ? "destructive" : "outline"}
+                          variant={
+                            status === "absent" ? "destructive" : "outline"
+                          }
                           onClick={() => updateAttendance(student.id, "absent")}
                         >
                           Absent

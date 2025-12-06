@@ -11,10 +11,6 @@ class Subject extends Model {
     protected $fillable = [
         'code',
         'title',
-        'day',
-        'time',
-        'room',
-        'teacher_id',
         'department_id',   
         'year_level_id',   
         'units',          
@@ -27,15 +23,18 @@ public function sections() {
                 ->where('department_id', $this->department_id);
 }
 
-    public function teacher() {
-        return $this->belongsTo(Teacher::class);
+    public function assignments()
+    {
+        return $this->hasMany(SubjectAssignment::class);
     }
 
-    public function department() {
+    public function department()
+    {
         return $this->belongsTo(Department::class);
     }
 
-    public function yearLevel() {
+    public function yearLevel()
+    {
         return $this->belongsTo(YearLevel::class);
     }
 }

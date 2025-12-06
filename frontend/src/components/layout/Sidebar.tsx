@@ -28,21 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const normalizedRole = userRole === "administrator" ? "admin" : userRole;
 
-  // ✅ For dropdown toggle
-  const [coursesOpen, setCoursesOpen] = useState(false);
-
-  // ✅ Example subjects (replace later with API call)
-  const subjects = [
-    "BSIT 2A - IT 111",
-    "BSIT 2B - IT 111",
-    "BSIT 2C - IT 121",
-    "BSIT 3A - IT 121",
-    "BSIT 3B - IT 121",
-    "BSIT 3C - IT 121",
-    "BSIT 3D - IT 121",
-    "BSIT 3E - IT 121",
-    "BSIT 4Z - IT Elec 4",
-  ];
+  const subjects = [];
 
   const getMenuItems = () => {
     switch (normalizedRole) {
@@ -66,9 +52,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           { id: "dashboard", label: "Dashboard", icon: BarChart3 },
           {
             id: "courses",
-            label: "Courses",
+            label: "Course Load",
             icon: BookOpen,
-            hasDropdown: true,
           },
           { id: "students", label: "My Students", icon: Users },
           { id: "reports", label: "Reports", icon: FileText },
@@ -121,52 +106,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeItem === item.id;
-
-          // Special handling for Courses dropdown
-          if (item.hasDropdown) {
-            return (
-              <div key={item.id}>
-                <button
-                  onClick={() => setCoursesOpen(!coursesOpen)}
-                  className={cn(
-                    "w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
-                    coursesOpen
-                      ? "bg-white/20 text-white"
-                      : "text-white/80 hover:bg-white/10 hover:text-white"
-                  )}
-                >
-                  <span className="flex items-center gap-3">
-                    <Icon className="w-5 h-5" />
-                    {!collapsed && <span>{item.label}</span>}
-                  </span>
-                  {!collapsed &&
-                    (coursesOpen ? (
-                      <ChevronDown className="w-4 h-4" />
-                    ) : (
-                      <ChevronRight className="w-4 h-4" />
-                    ))}
-                </button>
-
-                {/* Submenu for Courses */}
-                {coursesOpen && !collapsed && (
-                  <div className="ml-10 mt-1 space-y-1">
-                    {subjects.map((subject) => (
-                      <button
-                        key={subject}
-                        onClick={() => onItemClick(subject)}
-                        className={cn(
-                          "w-full text-left px-3 py-2 rounded-md text-sm text-white/80 hover:bg-white/10 hover:text-white",
-                          activeItem === subject && "bg-white/20 text-white"
-                        )}
-                      >
-                        {subject}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          }
 
           // Normal menu items
           return (

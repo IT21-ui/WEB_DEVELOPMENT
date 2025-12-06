@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 
 
-
-
 class AdminController extends Controller
 {
     /* ========================================
@@ -50,7 +48,7 @@ public function dashboardStats(Request $request)
         'denied_users'       => $deniedUsers,     
         'approved_students'  => $approvedStudents,
         'approved_teachers'  => $approvedTeachers,
-        'systemReports'  => $systemReports,
+        'systemReports'      => $systemReports,
     ]);
 }
 

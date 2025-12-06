@@ -1,67 +1,91 @@
-import React, { useState } from 'react';
-import { Settings, Save, Shield, Bell, Database, Mail, Lock, Globe, Palette } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
+import React, { useEffect, useState } from "react";
+import {
+  Settings,
+  Save,
+  Shield,
+  Bell,
+  Database,
+  Mail,
+  Lock,
+  Globe,
+  Palette,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 
 const AdminSettings: React.FC = () => {
-  const [settings, setSettings] = useState({
-    // General Settings
-    siteName: 'TrackEd',
-    siteDescription: 'Student Management System',
-    adminEmail: 'admin@gmail.com',
-    timezone: 'UTC',
-    dateFormat: 'MM/DD/YYYY',
-    
-    // Security Settings
-    sessionTimeout: '30',
-    maxLoginAttempts: '5',
-    passwordMinLength: '8',
-    requireTwoFactor: false,
-    autoLogout: true,
-    
-    // Notification Settings
-    emailNotifications: true,
-    pushNotifications: false,
-    dailyReports: true,
-    weeklyDigest: true,
-    systemAlerts: true,
-    
-    // System Settings
-    maintenanceMode: false,
-    debugMode: false,
-    cacheEnabled: true,
-    backupInterval: 'daily',
-    maxFileSize: '10',
-    
-    // User Settings
-    allowSelfRegistration: true,
-    defaultUserRole: 'student',
-    requireEmailVerification: true,
-    autoApproveStudents: false,
-    autoApproveTeachers: false,
-  });
-
+  const [settings, setSettings] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const handleSettingChange = (key: string, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = (section: string) => {
-    console.log(`Saving ${section} settings:`, settings);
-    // Here you would normally save to backend
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/settings");
+        const data = await res.json();
+        setSettings(data);
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
+  if (loading) return <p>Loading settings...</p>;
+  if (!settings) return <p>Failed to load settings.</p>;
+
+  const handleSave = async (section: string) => {
+    try {
+      const res = await fetch("http://localhost:8000/api/settings", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(settings),
+      });
+
+      const data = await res.json();
+      console.log("Saved:", data);
+      alert("Settings updated successfully");
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      alert("Failed to save settings");
+    }
   };
 
-  const SettingRow = ({ label, description, children }: { label: string; description?: string; children: React.ReactNode }) => (
+  const SettingRow = ({
+    label,
+    description,
+    children,
+  }: {
+    label: string;
+    description?: string;
+    children: React.ReactNode;
+  }) => (
     <div className="flex items-center justify-between py-3">
       <div className="space-y-0.5">
         <Label className="text-sm font-medium text-primary">{label}</Label>
-        {description && <p className="text-xs text-muted-foreground">{description}</p>}
+        {description && (
+          <p className="text-xs text-muted-foreground">{description}</p>
+        )}
       </div>
       <div>{children}</div>
     </div>
@@ -103,7 +127,9 @@ const AdminSettings: React.FC = () => {
                   <Input
                     id="siteName"
                     value={settings.siteName}
-                    onChange={(e) => handleSettingChange('siteName', e.target.value)}
+                    onChange={(e) =>
+                      handleSettingChange("siteName", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -112,17 +138,21 @@ const AdminSettings: React.FC = () => {
                     id="adminEmail"
                     type="email"
                     value={settings.adminEmail}
-                    onChange={(e) => handleSettingChange('adminEmail', e.target.value)}
+                    onChange={(e) =>
+                      handleSettingChange("adminEmail", e.target.value)
+                    }
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="siteDescription">Site Description</Label>
                 <Textarea
                   id="siteDescription"
                   value={settings.siteDescription}
-                  onChange={(e) => handleSettingChange('siteDescription', e.target.value)}
+                  onChange={(e) =>
+                    handleSettingChange("siteDescription", e.target.value)
+                  }
                   rows={3}
                 />
               </div>
@@ -130,22 +160,40 @@ const AdminSettings: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="timezone">Timezone</Label>
-                  <Select value={settings.timezone} onValueChange={(value) => handleSettingChange('timezone', value)}>
+                  <Select
+                    value={settings.timezone}
+                    onValueChange={(value) =>
+                      handleSettingChange("timezone", value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="UTC">UTC</SelectItem>
-                      <SelectItem value="America/New_York">Eastern Time</SelectItem>
-                      <SelectItem value="America/Chicago">Central Time</SelectItem>
-                      <SelectItem value="America/Denver">Mountain Time</SelectItem>
-                      <SelectItem value="America/Los_Angeles">Pacific Time</SelectItem>
+                      <SelectItem value="America/New_York">
+                        Eastern Time
+                      </SelectItem>
+                      <SelectItem value="America/Chicago">
+                        Central Time
+                      </SelectItem>
+                      <SelectItem value="America/Denver">
+                        Mountain Time
+                      </SelectItem>
+                      <SelectItem value="America/Los_Angeles">
+                        Pacific Time
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="dateFormat">Date Format</Label>
-                  <Select value={settings.dateFormat} onValueChange={(value) => handleSettingChange('dateFormat', value)}>
+                  <Select
+                    value={settings.dateFormat}
+                    onValueChange={(value) =>
+                      handleSettingChange("dateFormat", value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -159,7 +207,9 @@ const AdminSettings: React.FC = () => {
               </div>
 
               <div className="flex justify-end pt-4">
-                <Button onClick={() => handleSave('general')}>Save General Settings</Button>
+                <Button onClick={() => handleSave("general")}>
+                  Save General Settings
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -176,12 +226,16 @@ const AdminSettings: React.FC = () => {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="sessionTimeout">Session Timeout (minutes)</Label>
+                  <Label htmlFor="sessionTimeout">
+                    Session Timeout (minutes)
+                  </Label>
                   <Input
                     id="sessionTimeout"
                     type="number"
                     value={settings.sessionTimeout}
-                    onChange={(e) => handleSettingChange('sessionTimeout', e.target.value)}
+                    onChange={(e) =>
+                      handleSettingChange("sessionTimeout", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -190,7 +244,9 @@ const AdminSettings: React.FC = () => {
                     id="maxLoginAttempts"
                     type="number"
                     value={settings.maxLoginAttempts}
-                    onChange={(e) => handleSettingChange('maxLoginAttempts', e.target.value)}
+                    onChange={(e) =>
+                      handleSettingChange("maxLoginAttempts", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -199,7 +255,9 @@ const AdminSettings: React.FC = () => {
                     id="passwordMinLength"
                     type="number"
                     value={settings.passwordMinLength}
-                    onChange={(e) => handleSettingChange('passwordMinLength', e.target.value)}
+                    onChange={(e) =>
+                      handleSettingChange("passwordMinLength", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -213,7 +271,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.requireTwoFactor}
-                    onCheckedChange={(checked) => handleSettingChange('requireTwoFactor', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("requireTwoFactor", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -223,13 +283,17 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.autoLogout}
-                    onCheckedChange={(checked) => handleSettingChange('autoLogout', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("autoLogout", checked)
+                    }
                   />
                 </SettingRow>
               </div>
 
               <div className="flex justify-end pt-4">
-                <Button onClick={() => handleSave('security')}>Save Security Settings</Button>
+                <Button onClick={() => handleSave("security")}>
+                  Save Security Settings
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -251,7 +315,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.emailNotifications}
-                    onCheckedChange={(checked) => handleSettingChange('emailNotifications', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("emailNotifications", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -261,7 +327,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.pushNotifications}
-                    onCheckedChange={(checked) => handleSettingChange('pushNotifications', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("pushNotifications", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -271,7 +339,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.dailyReports}
-                    onCheckedChange={(checked) => handleSettingChange('dailyReports', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("dailyReports", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -281,7 +351,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.weeklyDigest}
-                    onCheckedChange={(checked) => handleSettingChange('weeklyDigest', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("weeklyDigest", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -291,13 +363,17 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.systemAlerts}
-                    onCheckedChange={(checked) => handleSettingChange('systemAlerts', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("systemAlerts", checked)
+                    }
                   />
                 </SettingRow>
               </div>
 
               <div className="flex justify-end pt-4">
-                <Button onClick={() => handleSave('notifications')}>Save Notification Settings</Button>
+                <Button onClick={() => handleSave("notifications")}>
+                  Save Notification Settings
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -319,7 +395,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.maintenanceMode}
-                    onCheckedChange={(checked) => handleSettingChange('maintenanceMode', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("maintenanceMode", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -329,7 +407,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.debugMode}
-                    onCheckedChange={(checked) => handleSettingChange('debugMode', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("debugMode", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -339,7 +419,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.cacheEnabled}
-                    onCheckedChange={(checked) => handleSettingChange('cacheEnabled', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("cacheEnabled", checked)
+                    }
                   />
                 </SettingRow>
               </div>
@@ -349,7 +431,12 @@ const AdminSettings: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="backupInterval">Backup Interval</Label>
-                  <Select value={settings.backupInterval} onValueChange={(value) => handleSettingChange('backupInterval', value)}>
+                  <Select
+                    value={settings.backupInterval}
+                    onValueChange={(value) =>
+                      handleSettingChange("backupInterval", value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -367,13 +454,17 @@ const AdminSettings: React.FC = () => {
                     id="maxFileSize"
                     type="number"
                     value={settings.maxFileSize}
-                    onChange={(e) => handleSettingChange('maxFileSize', e.target.value)}
+                    onChange={(e) =>
+                      handleSettingChange("maxFileSize", e.target.value)
+                    }
                   />
                 </div>
               </div>
 
               <div className="flex justify-end pt-4">
-                <Button onClick={() => handleSave('system')}>Save System Settings</Button>
+                <Button onClick={() => handleSave("system")}>
+                  Save System Settings
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -395,7 +486,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.allowSelfRegistration}
-                    onCheckedChange={(checked) => handleSettingChange('allowSelfRegistration', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("allowSelfRegistration", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -405,7 +498,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.requireEmailVerification}
-                    onCheckedChange={(checked) => handleSettingChange('requireEmailVerification', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("requireEmailVerification", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -415,7 +510,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.autoApproveStudents}
-                    onCheckedChange={(checked) => handleSettingChange('autoApproveStudents', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("autoApproveStudents", checked)
+                    }
                   />
                 </SettingRow>
 
@@ -425,7 +522,9 @@ const AdminSettings: React.FC = () => {
                 >
                   <Switch
                     checked={settings.autoApproveTeachers}
-                    onCheckedChange={(checked) => handleSettingChange('autoApproveTeachers', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("autoApproveTeachers", checked)
+                    }
                   />
                 </SettingRow>
               </div>
@@ -434,7 +533,12 @@ const AdminSettings: React.FC = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="defaultUserRole">Default User Role</Label>
-                <Select value={settings.defaultUserRole} onValueChange={(value) => handleSettingChange('defaultUserRole', value)}>
+                <Select
+                  value={settings.defaultUserRole}
+                  onValueChange={(value) =>
+                    handleSettingChange("defaultUserRole", value)
+                  }
+                >
                   <SelectTrigger className="w-48">
                     <SelectValue />
                   </SelectTrigger>
@@ -446,7 +550,9 @@ const AdminSettings: React.FC = () => {
               </div>
 
               <div className="flex justify-end pt-4">
-                <Button onClick={() => handleSave('users')}>Save User Settings</Button>
+                <Button onClick={() => handleSave("users")}>
+                  Save User Settings
+                </Button>
               </div>
             </CardContent>
           </Card>
